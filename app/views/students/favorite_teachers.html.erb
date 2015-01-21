@@ -1,0 +1,8 @@
+<%if @favorite_teachers.blank?%>
+<p> You have not favored any teachers </p>
+<%else%>
+<%@favorite_teachers.each do |f|%>
+<%= f.teacher.name%>
+<%= f.comments%>
+<%end%>
+<%end%>

@@ -1,0 +1,24 @@
+<!-- Offers all classes availble in system. Can view by teachers, service type, filter by levels --!>
+
+<h3> Filter Options </h3>
+<label for="start_time">Start Time</label> <select name="start_time" class="start_time"></select>
+<label for="end_time">End Time</label> <select name="end_time" class="end_time"></select>
+<label for="skill_level">Skill Level</label> <select name="skill_level" class="skill_level"></select>
+<label for="language">Language</label> <select name="language" class="language"></select>
+<label for="class_type">Class Type</label><select name="class_type" class="class_type"></select>
+
+<h3> List of Teachers </h3>
+<%User.teachers.each do |t|%>
+<%=t.name %>, <a href="view_teacher?id=<%=t.id%>">View Profile</a> <br />
+<p> <%=t.last_name%>'s available times: </p>
+<%t.time_slots.each do |ts|%>
+<%=ts.start_time%> to <%=ts.end_time%> <a  href="sign_up?ts_id=<%=ts.id%>" class="sign_up" id="<%=ts.id%>">Sign Up </a> <br />
+<%end%>
+<p> <%=t.name%>'s available class types. </p>
+<%t.services.each do |service| %>
+<%= service.language_name + ', ' + service.level_name + ', ' + service.type_name%><br />
+<%end%>
+
+<%end%>
+
+                 

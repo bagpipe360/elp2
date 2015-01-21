@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Question:</b>
+  <%= @interview_question.question_id %>
+</p>
+
+<p>
+  <b>Question:</b>
+  <%= @interview_question.question %>
+</p>
+
+
+<%= link_to 'Edit', edit_interview_question_path(@interview_question) %> |
+<%= link_to 'Back', interview_questions_path %>

@@ -1,0 +1,28 @@
+
+<table>
+  <tr>
+    <th>First name</th>
+    <th>Last name</th>
+    <th>Role</th>
+    <th>Created at</th>
+    <th>Description</th>
+    <th>Profile picture</th>
+    <th>Verified terms and service</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<tr>
+    <td><%= @user.first_name %></td>
+    <td><%= @user.last_name %></td>
+    <td><%= @user.role %></td>
+    <td><%= @user.created_at %></td>
+    <td><%= @user.description %></td>
+    <td><%= @user.profile_picture %></td>
+    <td><%= @user.verified_terms_and_service %></td>
+    <td><%= link_to 'Edit', edit_user_path(@user) %></td>
+  </tr>
+</table>
+
+

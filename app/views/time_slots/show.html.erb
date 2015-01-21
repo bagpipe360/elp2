@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Teacher:</b>
+  <%= @time_slot.user_id %>
+</p>
+
+<p>
+  <b>Start time:</b>
+  <%= @time_slot.start_time %>
+</p>
+
+<p>
+  <b>End time:</b>
+  <%= @time_slot.end_time %>
+</p>
+
+
+<%= link_to 'Edit', edit_time_slot_path(@time_slot) %> |
+<%= link_to 'Back', time_slots_path %>

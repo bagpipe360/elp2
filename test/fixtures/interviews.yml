@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  application_id: 1
+  date_completed: 2015-01-10
+  interview_score: 1
+
+two:
+  application_id: 1
+  date_completed: 2015-01-10
+  interview_score: 1

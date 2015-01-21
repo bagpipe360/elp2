@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  ip_address: MyString
+  date_accessed: 2015-01-19
+  blocked: false
+
+two:
+  ip_address: MyString
+  date_accessed: 2015-01-19
+  blocked: false

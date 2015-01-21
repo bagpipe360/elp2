@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>User:</b>
+  <%= @identity.user_id %>
+</p>
+
+<p>
+  <b>Password digest:</b>
+  <%= @identity.password_digest %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%= @identity.email %>
+</p>
+
+
+<%= link_to 'Edit', edit_identity_path(@identity) %> |
+<%= link_to 'Back', identities_path %>

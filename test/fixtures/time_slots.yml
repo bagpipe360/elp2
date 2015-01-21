@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  teacher_id: 1
+  start_time: 2015-01-10
+  end_time: 2015-01-10
+
+two:
+  teacher_id: 1
+  start_time: 2015-01-10
+  end_time: 2015-01-10

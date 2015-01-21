@@ -1,0 +1,49 @@
+<%= form_for(@application) do |f| %>
+  <% if @application.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@application.errors.count, "error") %> prohibited this application from being saved:</h2>
+
+      <ul>
+      <% @application.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %><br />
+    <%= f.number_field :user_id %>
+  </div>
+  <div class="field">
+    <%= f.label :video_interview %><br />
+    <%= f.text_field :video_interview %>
+  </div>
+  <div class="field">
+    <%= f.label :interview_id %><br />
+    <%= f.number_field :interview_id %>
+  </div>
+  <div class="field">
+    <%= f.label :resume_upload %><br />
+    <%= f.text_field :resume_upload %>
+  </div>
+  <div class="field">
+    <%= f.label :education %><br />
+    <%= f.text_field :education %>
+  </div>
+  <div class="field">
+    <%= f.label :admin_id %><br />
+    <%= f.number_field :admin_id %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br />
+    <%= f.text_field :status %>
+  </div>
+  <div class="field">
+    <%= f.label :date_applied %><br />
+    <%= f.date_select :date_applied %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user_id: 1
+  video_interview: 
+  interview_id: 1
+  resume_upload: 
+  education: MyString
+  admin_id: 1
+  status: MyString
+  date_applied: 2015-01-10
+
+two:
+  user_id: 1
+  video_interview: 
+  interview_id: 1
+  resume_upload: 
+  education: MyString
+  admin_id: 1
+  status: MyString
+  date_applied: 2015-01-10

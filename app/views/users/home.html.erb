@@ -1,0 +1,12 @@
+Welcome! <br />
+
+<%if @teacher %>
+<a href="teacher/schedule">Schedule</a> <br />
+<a href="users">Profile</a> <br />
+<a href="teacher/services">Services</a> <br />
+<%else%>
+<a href="student/favorite_teachers">Favorite Teachers</a> <br />
+<a href="student/lessons">Lessons Page</a> <br />
+<a href="users">Profile</a> <br />
+<a href="student/search">Browse Classes</a> <br />
+<%end%>

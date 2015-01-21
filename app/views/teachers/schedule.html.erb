@@ -1,0 +1,27 @@
+<p> These are time slots you have available to sign up for. </p>
+<%@time_slots.each do |ts|%>
+<%lesson = Lesson.where(:time_slot_id => ts.id)%>
+<%if !lesson.blank? %>
+<p> This time slot is booked. <a href="/lesson?<%=lesson.first.id%>">View Lesson Page</a> </p>
+<%end%>
+<%= ts.start_time%> <br />
+<%= ts.end_time%>  <br />
+<br />
+<%end%>
+
+<%@lessons.each do |sl| %>
+<a href="/lesson/review?lid=<%=sl.id%>">Lesson Review </a>
+<%=sl.student_id%> <br />
+<%=sl.time_slot_id%> <br />
+<%=sl.start_time %> <br />
+<%=sl.end_time %> <br />
+<%=sl.rounded_time%> <br />
+<%=sl.student_paid%> <br />
+<%=sl.teacher_paid%> <br />
+<%=sl.token%> <br />
+<%=sl.session_id%> <br />
+<br />
+<%end%>
+
+<a href="/time_slots/new"> Create new Time Slot</a>
+

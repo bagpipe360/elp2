@@ -1,0 +1,37 @@
+<h3> Signing up for  Time Slot - </h3>
+<%= @timeslot.start_time %> to <%=@timeslot.end_time%> for <%=@teacher.name%>.
+
+<h3> Please select class package. </h3>
+
+<% @teacher.services.each do |s| %>
+<%=s.level_name%>, <%=s.language_name%>, <%=s.type_name%> <button class="choose" id="<%=s.id%>"> Choose </button> <br />
+<%end%>
+
+<script>
+  
+  $('.choose').click(function() {
+    var service_id = $(this).attr('id');
+    $.ajax({
+      url: 'save_lesson',
+      type: 'GET',
+      data: {'service_id': service_id, 'timeslot_id': <%=@timeslot.id%>},
+      success: function(text) {
+        if (text== 'Success') {
+          alert(text + '!');
+          window.location.href = "lessons"
+        }
+        else if (text == 'Filled'){
+          alert('The lesson has already been filled!');
+        }
+        else {
+          alert('Something went wrong.')
+        }
+      },
+      failure: function() {
+        alert('Was not able to connect to server.');
+        
+      }
+    });
+  });
+  
+</script>
