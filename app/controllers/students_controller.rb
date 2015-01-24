@@ -45,4 +45,9 @@ class StudentsController < ApplicationController
       
   end
   
+  def search
+    @teachers = User.teachers  
+  end
+  
+  
 end

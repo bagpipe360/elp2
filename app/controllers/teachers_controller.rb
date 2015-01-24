@@ -8,8 +8,8 @@ class TeachersController < ApplicationController
   
 def schedule
   @teacher = @user
-  @time_slots = TimeSlot.where(:user_id => @uid)
-  @lessons = Lesson.where(:teacher_id => @uid)
+  @time_slots = TimeSlot.where(:user_id => @user.id)
+  @lessons = Lesson.where(:teacher_id => @user.id)
 end
   
   def services

@@ -18,6 +18,7 @@ Elp2::Application.routes.draw do
   
   get '/home', to: 'users#home'
   get '/login', to: 'identities#login'
+  get '/user/view_lesson', to: 'users#view_lesson'
   
   get '/teacher/schedule', to: 'teachers#schedule'
   get '/teacher/services', to: 'teachers#services'

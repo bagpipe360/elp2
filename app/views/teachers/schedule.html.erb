@@ -2,7 +2,9 @@
 <%@time_slots.each do |ts|%>
 <%lesson = Lesson.where(:time_slot_id => ts.id)%>
 <%if !lesson.blank? %>
-<p> This time slot is booked. <a href="/lesson?<%=lesson.first.id%>">View Lesson Page</a> </p>
+<p> This time slot is booked.  
+<a href="/user/view_lesson?lesson_id=<%=lesson.first.id%>">View Lesson</a> <br />
+</p>
 <%end%>
 <%= ts.start_time%> <br />
 <%= ts.end_time%>  <br />

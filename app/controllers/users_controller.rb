@@ -2,6 +2,19 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
 
+  
+  def view_lesson
+    @user = User.find(session[:user_id])
+    if @user.role == "Teacher"
+      @teacher = true
+    else
+      @teacher = false
+    end
+    ### This is where I will grab the token and session id
+    @current_time = Time.now
+    @lesson = Lesson.find(params[:lesson_id])
+    @timeslot = @lesson.time_slot
+  end
   def index
   
       @user = User.find(session[:user_id])

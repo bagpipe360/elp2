@@ -9,16 +9,23 @@
   <option value="<%=l.id%>"><%=l.language%></option>
   <%end%>
 </select> <br  />
+<button id="add_service">View Class Type</button>
+<div class="service_selection">
 <select id="service">
   <%@types_of_classes.each do |s|%>
   <option value="<%=s.id%>"><%=s.type_of_class%>, <%=s.description%></option>  <%end%>
-</select> <br />
+</select> 
+</div>
+<br />
+<button id="add_levels">View Levels</button>
+<div class="level_selection">
 <p> Select the highest level for the language and service you feel comfortable with. Please refer to the level descriptions. </p>
 <select id="level">
   <%@levels.each do |l|%>
   <option value="<%=l.id%>"><%=l.level%>, <%=l.description%></option>
   <%end%>
 </select>
+</div>
 <br />
 
 <button class="offer_service">Offer Service </button>
@@ -42,6 +49,9 @@
         else if (text == "Failure") {
           alert("Was unable to save Service information.");
         }
+        else if (text == "Higher"){
+           alert("You are already offering thise service at a higher level.");
+        }
         else {
           alert("Service is alread being offered.")       
         }
@@ -51,5 +61,17 @@
       }
       }); });
   
+  
+    $('#add_service').click(function() {
+      $('.service_selection').show();
+  })
+    
+  $('#add_levels').click(function() {
+      $('.level_selection').show();
+  });
+        $('.service_selection').hide();
+
+        $('.level_selection').hide();
+
   
 </script>

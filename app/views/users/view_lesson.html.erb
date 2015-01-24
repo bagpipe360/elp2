@@ -1,0 +1,13 @@
+<h3> Welcome to the Lesson Page! </h3>
+<p> This is where the video interface will take place. </p>
+
+<p> The class starts at <%=@timeslot.start_time%></p>
+<p> The class ends at <%=@timeslot.end_time%></p>
+
+<p>Time this page was accessed = <%=@current_time%></p>
+
+<%if @teacher%>
+<p> You are the teacher. You need to <button class="enable_lesson">Enable Lesson</button> </p>
+<%else%>
+<p> You are the student. Once the teacher is here you can connect. </p>
+<%end%>
