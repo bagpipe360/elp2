@@ -3,11 +3,63 @@
 
 <p> The class starts at <%=@timeslot.start_time%></p>
 <p> The class ends at <%=@timeslot.end_time%></p>
-
-<p>Time this page was accessed = <%=@current_time%></p>
-
-<%if @teacher%>
-<p> You are the teacher. You need to <button class="enable_lesson">Enable Lesson</button> </p>
+<%if @current_time > @timeslot.end_time%>
+<p> The lesson date has passed.</p>
+  <p>The lesson was <%=@taken ? "" : "not"%> taken.</p>
+  <%if @teacher_paid%>
+    <p> You have been paid for this lesson. <button>View Payments</button> </p>
+  <%else%>
+    <p> Payment pending for this lesson </p>
+    <p> The teacher has <%= @teacher_paid ? "" : "not" %> been paid for this lesson. </p>
+    <p> The student has <%=@student_paid ? "" : "not" %> paid for this lesson. </p>
+  <%end%>
+<%elsif @teacher%>
+    <p> You are the teacher. You need to <button class="begin_lesson">Begin Lesson</button> </p>
+<p><button class="end_lesson">End Lesson</button></p>
 <%else%>
-<p> You are the student. Once the teacher is here you can connect. </p>
+  <p> You are the student. Once the teacher is here you can connect. </p>
 <%end%>
+
+
+<script>
+  $('.begin_lesson').click(function() {
+     var now = new Date();
+    $.ajax({
+      url: '/lesson/begin',
+      data: {'start_time': now, 'lesson_id': '<%=@lesson.id%>'},
+      type: 'GET',
+      success: function(message) {
+        if (message == "Success") {
+          alert("The lesson was started at " + now);
+        }
+        else {
+           alert("You cannot start a lesson at this time."); 
+        }
+      },
+      failure: function() {
+        alert('Sorry. We were not able to connect to the database.');
+      }
+    })
+   });
+  
+    $('.end_lesson').click(function() {
+     var now = new Date();
+    $.ajax({
+      url: '/lesson/end',
+      data: {'end_time': now, 'lesson_id': '<%=@lesson.id%>'},
+      type: 'GET',
+      success: function(message) {
+        if (message == "Failure") {
+          alert("You cannot end the lesson at this time."); 
+        }
+        else {
+          alert("The lesson was ended at " + now + ". The total time was " + message +" minutes.");
+        }
+      },
+      failure: function() {
+        alert('Sorry. We were not able to connect to the database.');
+      }
+    })
+   });
+
+</script>

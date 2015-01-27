@@ -31,7 +31,9 @@ Elp2::Application.routes.draw do
   get 'student/sign_up', to: 'students#sign_up' 
   get 'student/save_lesson', to: 'students#save_lesson'
 
-
+  get '/lesson/begin', to: 'lessons#begin_lesson'
+  get '/lesson/end', to: 'lessons#end_lesson'
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

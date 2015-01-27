@@ -80,4 +80,37 @@ class LessonsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def begin_lesson
+    start_time = params[:start_time].to_datetime
+    lesson = Lesson.find(params[:lesson_id])
+    lesson.start_time = start_time
+    if lesson.save
+      msg = "Success"
+    else
+      msg = "Failure"
+    end
+    render :text => msg
+   end
+  
+  def end_lesson
+    end_time = params[:end_time].to_datetime
+    lesson = Lesson.find(params[:lesson_id])
+    lesson.end_time = end_time
+    rounded_time = ((end_time.to_f - lesson.start_time.to_f) / 60.0).to_f
+    lesson.rounded_time = rounded_time
+    puts lesson.rounded_time
+    puts lesson.end_time
+    puts lesson.start_time
+    puts "check here"
+    if lesson.save
+      msg = lesson.rounded_time.to_s
+    else
+      msg = "Failure"
+    end
+    render :text => msg
+   end
+  
+
+
 end

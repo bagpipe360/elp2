@@ -13,8 +13,14 @@ class UsersController < ApplicationController
     ### This is where I will grab the token and session id
     @current_time = Time.now
     @lesson = Lesson.find(params[:lesson_id])
-    @timeslot = @lesson.time_slot
+    @teacher_paid = @lesson.teacher_paid
+    @student_paid =  @lesson.student_paid
+    @timeslot = @lesson.time_slot 
+    @taken = !@lesson.start_time.blank?
   end
+  
+  
+  
   def index
   
       @user = User.find(session[:user_id])

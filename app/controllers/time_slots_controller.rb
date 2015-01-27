@@ -25,7 +25,7 @@ class TimeSlotsController < ApplicationController
   # GET /time_slots/new.json
   def new
     @time_slot = TimeSlot.new
-
+    
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @time_slot }
@@ -41,7 +41,7 @@ class TimeSlotsController < ApplicationController
   # POST /time_slots.json
   def create
     @time_slot = TimeSlot.new(params[:time_slot])
-
+    @time_slot.user_id = session[:user_id]
     respond_to do |format|
       if @time_slot.save
         format.html { redirect_to @time_slot, notice: 'Time slot was successfully created.' }
