@@ -1,5 +1,5 @@
 <%if @lessons.blank?%>
-<p> There are no lessons to show. </p>
+<p> There are no lessons to . </p>
 <%else%>
 <%@lessons.each do |l|%>
 <p> Scheduled Time </p>
@@ -8,7 +8,7 @@ End <%= l.time_slot.end_time%> <br />
 <%=l.teacher.name%> <br />
 <%if l.start_time.blank?%>
   This lesson was never entered. <br />
-<a href="/user/view_lesson?lesson_id=<%=l.id%>">View Lesson</a> <br />
+<a href="/student/lesson?lesson_id=<%=l.id%>">View Lesson</a> <br />
 <%else%>
 <%= l.start_time%> <br />
 <%= l.end_time%> <br />
@@ -22,3 +22,8 @@ End <%= l.time_slot.end_time%> <br />
 <%end%>
 <%end%>
 <%end%>
+
+
+<style>
+
+</style>

@@ -13,24 +13,61 @@
     <p> The teacher has <%= @teacher_paid ? "" : "not" %> been paid for this lesson. </p>
     <p> The student has <%=@student_paid ? "" : "not" %> paid for this lesson. </p>
   <%end%>
-<%elsif @teacher%>
     <p> You are the teacher. You need to <button class="begin_lesson">Begin Lesson</button> </p>
 <p><button class="end_lesson">End Lesson</button></p>
-<%else%>
-  <p> You are the student. Once the teacher is here you can connect. </p>
-<%end%>
-
-<%=render 'layouts/teacher'%>
 
 <button id="user_join">  Join Class </button>
 <button id="user_leave">  Leave Class </button>
 
-<div id="users_in_session_count">empty</div>
+<p id="s_ready"><% if @lesson.student_ready%> Student is ready. <%else%> Student is not ready <%end%> </p>
+<p> Your Status: <button class="status not_ready">Not Ready</button> </p>
 
 <div id="chat"></div>
+<%end%>
+
+<%= subscribe_to "/lesson/private/#{@lesson.id}" %>
+<%= subscribe_to "/student_updates/#{@lesson.id}" %>
 
 
+
+<%= form_tag new_message_path, :remote => true do %>
+  <%= text_field_tag :message %>
+<%= hidden_field_tag(:lid, value = @lesson.id)%>
+  <%= submit_tag "Send" %>
+<% end %>
 <script>
+  
+  
+  
+  PrivatePub.subscribe("/lesson/private/<%=@lesson.id%>", function(data) {
+   alert(data.msg);
+  });
+  
+  PrivatePub.subscribe("/student_updates/<%=@lesson.id%>", function(data) {
+          console.log(data);
+    if (data.status == 'true') {
+        $('#s_ready').text("Ready.");
+      } 
+    else {
+       $('#s_ready').text("Not Ready.");
+    }});
+
+
+  
+  $('body').on('click', '.not_ready', function() {
+    $.ajax({ url:'/teacher/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'true'} });
+    $(this).removeClass('not_ready').addClass('ready');
+    $(this).text('Ready');
+   });
+
+   $('body').on('click', '.ready', function() {
+     $.ajax({ url:'/teacher/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'false'} });
+     $(this).removeClass('ready').addClass('not_ready');
+     $(this).text('Not Ready');
+    });
+
+   
+  /*
   $('.begin_lesson').click(function() {
      var now = new Date();
     $.ajax({
@@ -71,7 +108,7 @@
     })
    });
 
- /*$(function() { 
+ $(function() { 
      var client = new Faye.Client('http://steady-box-12-181649.use1-2.nitrousbox.com:9292/faye')
      client.subscribe("/lessons/new", function(data) {
        if (data.teacher) {
@@ -81,12 +118,13 @@
          alert('Teacher is ready to start the class!');
        
        }
-       }
+                console.log(data);
+
+       });
                       
-         console.log(data);
      }); 
     
-*/
+
  
   $('#user_join').click(function(){
       alert('user clicked');
@@ -97,7 +135,7 @@
       });
     });
 
-
-/*  }); */
+*/
+ 
 
 </script>

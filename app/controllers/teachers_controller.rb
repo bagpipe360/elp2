@@ -60,9 +60,49 @@ end
 
   
   def unsubscribe_from_service
-    service_id = params[:service_id]
-    
-    
+    service_id = params[:service_id]    
+  end
+  
+  def lesson
+      @user = User.find(session[:user_id])
+      @teacher = true
+    ### This is where I will grab the token and session id
+    @current_time = Time.now
+    @lesson = Lesson.find(params[:lesson_id])
+    puts @lesson
+    @teacher_paid = @lesson.teacher_paid
+    @student_paid =  @lesson.student_paid
+    @timeslot = @lesson.time_slot 
+    @taken = !@lesson.start_time.blank?
+  end
+  
+      # It's PRIVATE, so send it to the PRIVATE channel
+ def new_message
+    @lesson_id = params[:lid]
+    @channel = "/lesson/private/" + @lesson_id
+    @message = {:msg => params[:message]}
+    respond_to do |f|
+      f.js
+    end
+  end
+  
+  def update_lesson_status
+    puts params
+    @lesson_id = params[:lid]
+    lesson = Lesson.find(@lesson_id)
+    status = params[:ready]
+    @channel = "/teacher_updates/" + @lesson_id
+    @message = {:status => params[:ready]}
+    if status == 'true'
+      lesson.teacher_ready = true
+    else
+      lesson.teacher_ready = false
+    end
+    if lesson.save
+      respond_to do |f|
+        f.js
+      end
+    end
   end
   
 end

@@ -28,6 +28,12 @@ group :test do
   gem 'selenium-webdriver'
   gem 'database_cleaner'
 end
+
+gem 'websocket-rails'
+gem "thin"
+gem "faye"
+gem "redis"
+gem 'private_pub'
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

@@ -1,4 +1,8 @@
 Elp2::Application.routes.draw do
+  get "sessions/new"
+
+  get "sessions/create"
+
   resources :interviews
 
 
@@ -9,6 +13,8 @@ Elp2::Application.routes.draw do
 
 
   resources :identities
+  
+  resources :lessons
 
 
   resources :time_slots
@@ -16,21 +22,30 @@ Elp2::Application.routes.draw do
 
   resources :users
   
+  get  '/login' => 'sessions#new', :as => :login
+  post '/login' => 'sessions#create', :as => :login
+  
   get '/home', to: 'users#home'
-  get '/login', to: 'identities#login'
+ # get '/login', to: 'identities#login'
   get '/user/view_lesson', to: 'users#view_lesson'
   
   get '/teacher/schedule', to: 'teachers#schedule'
   get '/teacher/services', to: 'teachers#services'
   get '/teacher/save_service', to: 'teachers#subscribe_to_service'
-  
+  get '/teacher/lesson', to: 'teachers#lesson'
+  post '/teacher/new_message' => 'teachers#new_message', :as => :new_message
+  post '/teacher/update_lesson_status', to: 'teachers#update_lesson_status'
+
   get 'student/favorite_teachers', to: 'students#favorite_teachers'
   get 'student/lessons', to: 'students#lessons'
   get 'student/search', to: 'students#search'
   get 'student/view_teacher', to: 'students#view_teacher'
   get 'student/sign_up', to: 'students#sign_up' 
   get 'student/save_lesson', to: 'students#save_lesson'
-
+  get '/student/lesson', to: 'students#lesson'
+  get '/student/lesson_ready', to: 'students#lesson_ready'
+  post '/student/new_message' => 'students#new_message', :as => :new_message
+  post '/student/update_lesson_status', to: 'students#update_lesson_status'
   get '/lesson/begin', to: 'lessons#begin_lesson'
   get '/lesson/end', to: 'lessons#end_lesson'
   

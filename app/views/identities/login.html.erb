@@ -6,17 +6,17 @@
 </select>
 <button class="login"> Login</button>
 
-
 <script>
-  
-  $('.login').click( function() {
+  $(function() {
+    $('.login').click( function() {
       var select_val = $('.login_select').val();
 
          window.location.href = "/home?uid=" + select_val; 
       
       });
-      
-  
-  
+   
+  alert('yo');
+
+  });
   
 </script>

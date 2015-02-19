@@ -1,0 +1,8 @@
+<h1> Welcome to Eloquent Parrot! </h1>
+<%if @logged_in%>
+<a href="/logout">Log Out </a> <br />
+<a href="/users/home">User Hub </a> <br />
+<%else%>
+<a href="/login">Log In </a> <br />
+<a href="/sign_up">Sign Up </a> <br />
+<%end%>

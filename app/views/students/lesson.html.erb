@@ -1,0 +1,153 @@
+<h3> Welcome to the Lesson Page! </h3>
+<p> This is where the video interface will take place. </p>
+
+<p> The class starts at <%=@timeslot.start_time%></p>
+<p> The class ends at <%=@timeslot.end_time%></p>
+
+<p> Your Status: <% if @lesson.student_ready%><button class="status ready">Ready</button>
+  <%else%><button class="status not_ready">Not Ready</button> 
+  <%end%></p>
+<p> Teacher's Status: <div id="t_ready"><%=@teacher_status%></div></p>
+
+<p><button id="begin_lesson">Begin Lesson</button> </p>
+<button id="user_join">  Join Class </button>
+<button id="user_leave">  Leave Class </button>
+
+
+
+
+<div id="chat"></div>
+<%= subscribe_to "/lesson/private/#{@lesson.id}" %>
+<%= subscribe_to "/teacher_updates/#{@lesson.id}" %>
+
+<%= form_tag new_message_path, :remote => true do %>
+  <%= text_field_tag :message %>
+<%= hidden_field_tag(:lid, value = @lesson.id)%>
+  <%= submit_tag "Send" %>
+<% end %>
+
+<style>
+  .ready {
+    background-color: 'green';
+  }
+  .not_ready {
+    background-color: 'red';
+  }
+</style>
+<script>
+  
+    PrivatePub.subscribe("/lesson/private/<%=@lesson.id%>", function(data) {
+   alert(data.msg);
+  });
+  
+    PrivatePub.subscribe("/teacher_updates/<%=@lesson.id%>", function(data) {
+       console.log(data);
+      if (data.status == 'true') {
+        $('#t_ready').text("Ready.");
+      } 
+    else {
+       $('#t_ready').text("Not Ready.");
+    }});   
+ 
+  $('body').on('click', '.not_ready', function() {
+    $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'true'} });
+    $(this).removeClass('not_ready').addClass('ready');
+    $(this).text('Ready');
+   });
+
+   $('body').on('click', '.ready', function() {
+     $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'false'} });
+     $(this).removeClass('ready').addClass('not_ready');
+     $(this).text('Not Ready');
+    });
+
+   
+   
+  
+   /*
+  $('.begin_lesson').click(function() {
+     var now = new Date();
+    $.ajax({
+      url: '/lesson/begin',
+      data: {'start_time': now, 'lesson_id': '<%=@lesson.id%>'},
+      type: 'GET',
+      success: function(message) {
+        if (message == "Success") {
+          alert("The lesson was started at " + now);
+        }
+        else {
+           alert("You cannot start a lesson at this time."); 
+        }
+      },
+      failure: function() {
+        alert('Sorry. We were not able to connect to the database.');
+      }
+    })
+   });
+  
+    $('.end_lesson').click(function() {
+     var now = new Date();
+    $.ajax({
+      url: '/lesson/end',
+      data: {'end_time': now, 'lesson_id': '<%=@lesson.id%>'},
+      type: 'GET',
+      success: function(message) {
+        if (message == "Failure") {
+          alert("You cannot end the lesson at this time."); 
+        }
+        else {
+          alert("The lesson was ended at " + now + ". The total time was " + message +" minutes.");
+        }
+      },
+      failure: function() {
+        alert('Sorry. We were not able to connect to the database.');
+      }
+    })
+   });
+
+ $(function() { 
+     var client = new Faye.Client('http://steady-box-12-181649.use1-2.nitrousbox.com:9292/faye')
+     client.subscribe("/lessons/new", function(data) {
+       if (data.teacher) {
+         alert('Teacher is ready to start the class!');
+       }
+       else if (data.student) {
+         alert('Teacher is ready to start the class!');
+       
+       }
+                console.log(data);
+
+       });
+                      
+     }); 
+    
+
+ 
+  $('#user_join').click(function(){
+      // Publish the message to the public channel
+    $.ajax({
+      url: '/student/lesson_ready',
+      type: 'GET',
+      data: {'student_id' : '<%=@user_id%>'},
+      success: function(data) {
+        if (data == 'Success') {
+          client.publish('/lessons/new', {
+            username: 'hey',
+            msg: 'msg'
+          });
+        }
+        else {
+          alert('Unable to set status to ready at this time.');
+        }
+      },
+      failure: function() {
+        alert('Unable to connect to database.');
+      }
+    });
+
+    });
+
+
+ */
+
+</script>

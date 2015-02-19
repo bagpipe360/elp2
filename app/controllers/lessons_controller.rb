@@ -1,6 +1,9 @@
-class LessonsController < ApplicationController
-  # GET /lessons
-  # GET /lessons.json
+class LessonsController < ApplicationsController
+  
+
+
+  
+  
   def index
     @lessons = Lesson.all
 
