@@ -38,7 +38,7 @@ gem 'private_pub'
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
 # To use Jbuilder templates for JSON
-# gem 'jbuilder'
+gem 'jbuilder'
 
 # Use unicorn as the app server
 # gem 'unicorn'
@@ -48,3 +48,13 @@ gem 'private_pub'
 
 # To use debugger
 # gem 'debugger'
+
+
+# Video Chat Service
+gem "opentok", "~> 2.2"
+
+#image upload
+gem "paperclip", "~> 2.7"
+gem "carrierwave"
+gem "jquery-fileupload-rails"
+

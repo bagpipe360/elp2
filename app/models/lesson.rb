@@ -8,4 +8,7 @@ class Lesson < ActiveRecord::Base
   
   has_one :lesson_review
 
+  
+  
+  
 end

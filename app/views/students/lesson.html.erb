@@ -9,7 +9,7 @@
   <%end%></p>
 <p> Teacher's Status: <div id="t_ready"><%=@teacher_status%></div></p>
 
-<p><button id="begin_lesson">Begin Lesson</button> </p>
+<p><button id="start_lesson" hidden>Start Lesson</button> </p>
 <button id="user_join">  Join Class </button>
 <button id="user_leave">  Leave Class </button>
 
@@ -26,6 +26,48 @@
   <%= submit_tag "Send" %>
 <% end %>
 
+
+
+
+<div class="container">
+<div class="row">
+<div class="col-xs-12"><button class="btn btn-large btn-success todays_lesson" id="<%=@lesson.id%>"><%if @teacher%>Teach<%else%>Take<%end%> today's lesson</button>
+<div class="col-xs-9">
+<%=@user.first_name%>
+   <div class="panel panel-default">
+   <div class="panel-heading">
+   		<div class="panel-title"><%=@subscriberName%></div>
+   </div>
+   <div class="panel-body">
+   	<div class="col-xs-9">
+    <div id="subscriberContainer"></div>
+    </div> <!--col 8-->
+    <div class="col-xs-3">
+        <button class="unsubscribe btn btn-sm btn-danger">Unsubscribe</button><br />
+        Start Time: <br />
+        Scheduled End Time: <br />
+    </div><!--col 4-->
+    </div>
+    </div>
+</div>
+<div class="col-xs-3">
+       <div class="panel panel-default">
+    <div class="panel-heading">
+   		<div class="panel-title"><%=@publisherName%></div>
+   </div>
+      <div class="panel-body">
+          <div id="myPublisherDiv"></div>
+              <button class="unpublish btn btn-sm btn-danger">Unpublish Stream</button>
+    <button class="resizeVideo btn btn-sm btn-primary">Resize</button>
+    <button class="toggleVideo btn btn-sm btn-primary" value=0>Turn Video Off</button>
+    <div class="Timer"></div>
+
+      </div>
+   </div>   
+    </div> <!--col 4-->
+    
+</div><!--row-->
+</div> <!--Container-->
 <style>
   .ready {
     background-color: 'green';
@@ -36,18 +78,23 @@
 </style>
 <script>
   
+  
+   
     PrivatePub.subscribe("/lesson/private/<%=@lesson.id%>", function(data) {
    alert(data.msg);
   });
   
     PrivatePub.subscribe("/teacher_updates/<%=@lesson.id%>", function(data) {
-       console.log(data);
       if (data.status == 'true') {
         $('#t_ready').text("Ready.");
       } 
-    else {
+      else {
        $('#t_ready').text("Not Ready.");
-    }});   
+      }
+      if (data.start_lesson) {
+        $('#start_lesson').show();
+      }
+      }});   
  
   $('body').on('click', '.not_ready', function() {
     $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'true'} });
@@ -61,11 +108,130 @@
      $(this).text('Not Ready');
     });
 
-   
-   
+   //OPENTOK
+
+   $(document).ready(function() {
+      // Initialize API key, session, and token...
+      // Think of a session as a room, and a token as the key to get in to the room
+      // Sessions and tokens are generated on your server and passed down to the client
+      var apiKey = "45159872"; 
+      var sessionId; //="2_MX40NTE1OTg3Mn5-MTQyNDM5MjUyNzgxOH5BbDV0blZxOHkxWXZGUGJvallMOVk1WUR-fg";
+      var token;// =  "T1==cGFydG5lcl9pZD00NTE1OTg3MiZzaWc9ZGZlNmM1NGNjNWRiYjI5MmU2ODE3ZjBjNTZlYjNkYzA0YTExYjIzNzpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5URTFPVGczTW41LU1UUXlORE01TWpVeU56Z3hPSDVCYkRWMGJsWnhPSGt4V1haR1VHSnZhbGxNT1ZrMVdVUi1mZyZjcmVhdGVfdGltZT0xNDI0MzkyNTU3Jm5vbmNlPTAuNTc5MjQ3MjAzODcxOTM3Ng==";
+	  var session;
+	  var subscriber;
+	  var stream;
+	  var subscriberProperties;
+	  var publisherName;
+	  var pHeight = 100;
+	  var pWidth = 150;
+	  var sHeight = 400;
+	  var sWidth = 600;
+	  var videoResolution = "1280x720";
+	  var videoFrameRate = 30;	
+	  var role = 'student'; // '<%=@user.role%>';
+	
   
+     
+
+  $.ajax({
+    	method: 'GET',
+        url: '/lesson/get_video_keys?lid=<%=@lesson.id%>',
+        dataType: 'json',	
+        async: false,
+        success: function(keysHash) {
+        	console.log(keysHash);
+        //	publisherName = keysHash.studentName;
+       		sessionID = keysHash.sessionID;
+       		token = keysHash.token;
+          console.log('error here');
+          alert(apiKey);
+       		session = OT.initSession(apiKey, sessionID);
+    }
+    });
+  
+ 
+
+  session.connect(token, function(error) {
+    var publisher = OT.initPublisher();
+    session.publish(publisher);
+  });
+     
+     
+  // This is the other user, connecting in
+	session.on("streamCreated", function (event) {
+	  alert('other user created stream');
+		stream = event.stream;
+	  subscriberProperties = {insertMode: "append", height: sHeight, width: sWidth};
+	 	subscriber = session.subscribe(stream, 'subscriberContainer', subscriberProperties, function (error) {
+  	if (error) {
+    	console.log(error);
+  	}
+    else {
+      console.log("Subscriber added.");
+  	}
+		});
+	});
+   
+     
+     
+     
+     // This is the current user, smaller screen
+session.connect(token, function(error) {
+  if (error) {
+    alert("Error connecting: ", error.code, error.message);
+  } else {
+    console.log("Connected to the session.");
+       		publisherProperties = {name: publisherName, width: pWidth, height: pHeight, resolution: videoResolution,
+	    							frameRate: videoFrameRate};
+       		publisher = OT.initPublisher('myPublisherDiv', publisherProperties);
+       		session.publish(publisher);
+  }
+});
+     
+     
+     
+
+	$('.unsubscribe').click(function() {
+		session.unsubscribe(stream);
+	});
+	
+	
+	$('.unpublish').click(function() {
+		session.unpublish(publisher);
+	});
+	
+	$('.resizeVideo').click(function() {
+    	var pubElement = $('#myPublisherDiv');
+    	pubElement.css("width","100");
+    	pubElement.css("height","100");
+  	});
+  	
+  	$('.toggleVideo').click(function() {
+  		if ($(this).val() == 0 ) {
+  			$(this).val(1);
+  			$(this).html('Turn Video On');
+  			publisher.publishVideo(false);
+  		}
+  		else {
+  			$(this).val(0);
+  			$(this).html('Turn Video Off');
+  			 publisher.publishVideo(true);
+  		}
+  	});
+  	
+  	
+  	var start = new Date;
+
+	setInterval(function() {
+    	$('.Timer').text((new Date - start) / 1000 + " Seconds");
+	}, 1000);
+	
+   });
+     
+     ///////////////
+
    /*
-  $('.begin_lesson').click(function() {
+  $('.start_lesson').click(function() {
      var now = new Date();
     $.ajax({
       url: '/lesson/begin',

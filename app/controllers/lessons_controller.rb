@@ -114,6 +114,45 @@ class LessonsController < ApplicationsController
     render :text => msg
    end
   
+  def get_video_keys
+		keysHash = {}
+		config_opentok
+    puts params
+		#temporary settings to develop video chatting
+    @lesson = Lesson.find(params[:lid])
+    if @lesson.session_id.blank?
+      session = @opentok.create_session(['p2p.preference','enabled'])
+      @lesson.session_id = session.session_id
+	  	@lesson.token = session.generate_token
+      @lesson.save
+    else
+      session_id = @lesson.session_id
+      token = @lesson.token
+    end
+				
+    keysHash[:sessionID] = @lesson.session_id
+    keysHash[:token] = @lesson.token
+    render :json => keysHash.to_json
+  end
+  
+  
+	def studentAccept
+		keysHash = {}
+		#temporary settings to develop video chatting
+    @lesson = Lesson.find(params[:lid])
+		keysHash[:sessionID] = @lesson.session_id
+    keysHash[:token] = @lesson.token
+		
+		render :json => keysHash.to_json	
+	end
+  
+  private
 
+	def config_opentok
+		if @opentok.nil?
+			@opentok = OpenTok::OpenTok.new '45159872', '82a9cdc2ecd85984db36be7975afee1fded7143c'
+
+		end
+	end
 
 end

@@ -29,6 +29,8 @@ Elp2::Application.routes.draw do
  # get '/login', to: 'identities#login'
   get '/user/view_lesson', to: 'users#view_lesson'
   
+  get '/lesson/get_video_keys', to: 'lessons#get_video_keys'
+  
   get '/teacher/schedule', to: 'teachers#schedule'
   get '/teacher/services', to: 'teachers#services'
   get '/teacher/save_service', to: 'teachers#subscribe_to_service'

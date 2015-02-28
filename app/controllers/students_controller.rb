@@ -80,8 +80,14 @@ class StudentsController < ApplicationController
     @lesson_id = params[:lid]
     lesson = Lesson.find(@lesson_id)
     status = params[:ready]
+    ## Check Teachers status to enable StartVideo
+    if lesson.teacher_ready and status == true
+      start_lesson = true
+    else
+      start_lesson = false
+    end
     @channel = "/student_updates/" + @lesson_id
-    @message = {:status => params[:ready]}
+    @message = {:status => status, :start_lesson => start_lesson}
     if status == 'true'
       lesson.student_ready = true
     else
@@ -94,4 +100,4 @@ class StudentsController < ApplicationController
     end
   end
   
-end
+end  

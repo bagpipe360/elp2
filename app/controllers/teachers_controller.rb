@@ -92,12 +92,18 @@ end
     lesson = Lesson.find(@lesson_id)
     status = params[:ready]
     @channel = "/teacher_updates/" + @lesson_id
-    @message = {:status => params[:ready]}
+    #Check student status to activate StartVideo
+    if lesson.student_ready and status == true
+      start_video = true
+    else
+      start_video = false
+    end
     if status == 'true'
       lesson.teacher_ready = true
     else
       lesson.teacher_ready = false
     end
+    @message = {:status => start_video, :start_video => start_video}
     if lesson.save
       respond_to do |f|
         f.js
