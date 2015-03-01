@@ -13,15 +13,17 @@
     <p> The teacher has <%= @teacher_paid ? "" : "not" %> been paid for this lesson. </p>
     <p> The student has <%=@student_paid ? "" : "not" %> paid for this lesson. </p>
   <%end%>
-    <p> You are the teacher. You need to <button class="begin_lesson">Begin Lesson</button> </p>
+    <p> You are the teacher. You need to <p><button id="start_lesson" style="display:<%if !@ready_to_start%>none<%end%>">Start Lesson</button> </p>
+ </p>
 <p><button class="end_lesson">End Lesson</button></p>
 
 <button id="user_join">  Join Class </button>
 <button id="user_leave">  Leave Class </button>
-
-<p id="s_ready"><% if @lesson.student_ready%> Student is ready. <%else%> Student is not ready <%end%> </p>
-<p> Your Status: <button class="status not_ready">Not Ready</button> </p>
-
+Student is
+<p id="s_ready"><% if @lesson.student_ready%>Ready<%else%>Not Ready<%end%></p>.
+<p> Your Status: <% if @lesson.teacher_ready%><button class="status ready">Ready</button>
+  <%else%><button class="status not_ready">Not Ready</button> 
+  <%end%></p>
 <div id="chat"></div>
 <%end%>
 
@@ -88,24 +90,36 @@
   PrivatePub.subscribe("/student_updates/<%=@lesson.id%>", function(data) {
           console.log(data);
     if (data.status == 'true') {
-        $('#s_ready').text("Ready.");
+        $('#s_ready').text("Ready");
       } 
     else {
-       $('#s_ready').text("Not Ready.");
-    }});
+       $('#s_ready').text("Not Ready");
+    }
+    if (data.start_lesson) {
+        $('#start_lesson').show();
+      }
+      else {
+        $('#start_lesson').hide();
+      }
+  });
 
 
-  
+  //Teacher is ready for class
   $('body').on('click', '.not_ready', function() {
     $.ajax({ url:'/teacher/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'true'} });
     $(this).removeClass('not_ready').addClass('ready');
     $(this).text('Ready');
+    console.log($('#s_ready').text());
+     if ($('#s_ready').text() == 'Ready') {
+       $('#start_lesson').css({'display':''});
+     }
    });
-
+// Teacher is not ready for class
    $('body').on('click', '.ready', function() {
      $.ajax({ url:'/teacher/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'false'} });
      $(this).removeClass('ready').addClass('not_ready');
      $(this).text('Not Ready');
+    $('#start_lesson').css({'display':'none'});
     });
 
    
@@ -201,7 +215,6 @@
 	  var role = 'student'; // '<%=@user.role%>';
 	
   
-  alert('current');
   	 $.ajax({
     	method: 'GET',
         url: '/lesson/get_video_keys?lid=<%=@lesson.id%>',
@@ -209,7 +222,7 @@
         async: false,
         success: function(keysHash) {
         	console.log(keysHash);
-        	alert(keysHash);
+       // 	alert(keysHash);
         	publisherName = keysHash.studentName;
        		sessionID = keysHash.sessionID;
        		token = keysHash.token;
@@ -237,7 +250,6 @@ session.connect(token, function(error) {
   if (error) {
     alert("Error connecting: ", error.code, error.message);
   } else {
-	alert('hello');
     console.log("Connected to the session.");
        		publisherProperties = {name: publisherName, width: pWidth, height: pHeight, resolution: videoResolution,
 	    							frameRate: videoFrameRate};

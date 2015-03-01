@@ -69,11 +69,15 @@ end
     ### This is where I will grab the token and session id
     @current_time = Time.now
     @lesson = Lesson.find(params[:lesson_id])
-    puts @lesson
     @teacher_paid = @lesson.teacher_paid
     @student_paid =  @lesson.student_paid
     @timeslot = @lesson.time_slot 
     @taken = !@lesson.start_time.blank?
+      if @lesson.teacher_ready and @lesson.student_ready
+      @ready_to_start = true
+    else
+      @ready_to_start = false
+    end 
   end
   
       # It's PRIVATE, so send it to the PRIVATE channel
@@ -93,18 +97,19 @@ end
     status = params[:ready]
     @channel = "/teacher_updates/" + @lesson_id
     #Check student status to activate StartVideo
-    if lesson.student_ready and status == true
-      start_video = true
-    else
-      start_video = false
-    end
+
     if status == 'true'
       lesson.teacher_ready = true
     else
       lesson.teacher_ready = false
     end
-    @message = {:status => start_video, :start_video => start_video}
     if lesson.save
+      if lesson.student_ready and status == 'true'
+        start_lesson = true
+      else
+        start_lesson = false
+      end
+      @message = {:status => status, :start_lesson => start_lesson}
       respond_to do |f|
         f.js
       end

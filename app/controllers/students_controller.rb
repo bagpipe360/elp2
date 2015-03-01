@@ -64,6 +64,11 @@ class StudentsController < ApplicationController
     else
       @teacher_status = 'Not Ready'
     end
+    if @lesson.teacher_ready and @lesson.student_ready
+      @ready_to_start = true
+    else
+      @ready_to_start = false
+    end
   end
   
   def new_message
@@ -81,19 +86,20 @@ class StudentsController < ApplicationController
     lesson = Lesson.find(@lesson_id)
     status = params[:ready]
     ## Check Teachers status to enable StartVideo
-    if lesson.teacher_ready and status == true
-      start_lesson = true
-    else
-      start_lesson = false
-    end
+
     @channel = "/student_updates/" + @lesson_id
-    @message = {:status => status, :start_lesson => start_lesson}
     if status == 'true'
       lesson.student_ready = true
     else
       lesson.student_ready = false
     end
     if lesson.save
+      if lesson.teacher_ready and status == 'true'
+        start_lesson = true
+      else
+        start_lesson = false
+      end
+      @message = {:status => status, :start_lesson => start_lesson}
       respond_to do |f|
         f.js
       end

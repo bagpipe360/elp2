@@ -8,8 +8,7 @@
   <%else%><button class="status not_ready">Not Ready</button> 
   <%end%></p>
 <p> Teacher's Status: <div id="t_ready"><%=@teacher_status%></div></p>
-
-<p><button id="start_lesson" hidden>Start Lesson</button> </p>
+<p><button id="start_lesson" style="display:<%if !@ready_to_start%>none<%end%>">Start Lesson</button> </p>
 <button id="user_join">  Join Class </button>
 <button id="user_leave">  Leave Class </button>
 
@@ -85,6 +84,7 @@
   });
   
     PrivatePub.subscribe("/teacher_updates/<%=@lesson.id%>", function(data) {
+      console.log(data);
       if (data.status == 'true') {
         $('#t_ready').text("Ready.");
       } 
@@ -94,18 +94,26 @@
       if (data.start_lesson) {
         $('#start_lesson').show();
       }
-      }});   
+      else {
+        $('#start_lesson').hide();
+      }
+      });   
  
   $('body').on('click', '.not_ready', function() {
     $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'true'} });
     $(this).removeClass('not_ready').addClass('ready');
     $(this).text('Ready');
+      if ($('#t_ready').text() == 'Ready') {
+       $('#start_lesson').css({'display':''});
+     }
    });
 
    $('body').on('click', '.ready', function() {
      $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'false'} });
      $(this).removeClass('ready').addClass('not_ready');
      $(this).text('Not Ready');
+     console.log($('#t_ready').text());
+    $('#start_lesson').css({'display':'none'});
     });
 
    //OPENTOK
