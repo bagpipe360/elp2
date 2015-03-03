@@ -9,13 +9,15 @@
   <%end%></p>
 <p> Teacher's Status: <div id="t_ready"><%=@teacher_status%></div></p>
 <p><button id="start_lesson" style="display:<%if !@ready_to_start%>none<%end%>">Start Lesson</button> </p>
+
+<!--
 <button id="user_join">  Join Class </button>
 <button id="user_leave">  Leave Class </button>
+-->
 
 
+<div id="chat"></div>r
 
-
-<div id="chat"></div>
 <%= subscribe_to "/lesson/private/#{@lesson.id}" %>
 <%= subscribe_to "/teacher_updates/#{@lesson.id}" %>
 
@@ -147,23 +149,20 @@
         dataType: 'json',	
         async: false,
         success: function(keysHash) {
-        	console.log(keysHash);
         //	publisherName = keysHash.studentName;
        		sessionID = keysHash.sessionID;
        		token = keysHash.token;
-          console.log('error here');
-          alert(apiKey);
        		session = OT.initSession(apiKey, sessionID);
     }
     });
   
  
-
+/*
   session.connect(token, function(error) {
     var publisher = OT.initPublisher();
     session.publish(publisher);
   });
-     
+  */   
      
   // This is the other user, connecting in
 	session.on("streamCreated", function (event) {
@@ -184,6 +183,7 @@
      
      
      // This is the current user, smaller screen
+     /*
 session.connect(token, function(error) {
   if (error) {
     alert("Error connecting: ", error.code, error.message);
@@ -195,10 +195,12 @@ session.connect(token, function(error) {
        		session.publish(publisher);
   }
 });
-     
-     
-     
 
+*/
+     
+     
+     
+/*
 	$('.unsubscribe').click(function() {
 		session.unsubscribe(stream);
 	});
@@ -233,7 +235,7 @@ session.connect(token, function(error) {
 	setInterval(function() {
     	$('.Timer').text((new Date - start) / 1000 + " Seconds");
 	}, 1000);
-	
+*/	
    });
      
      ///////////////

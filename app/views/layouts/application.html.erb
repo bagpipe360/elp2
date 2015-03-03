@@ -8,12 +8,19 @@
       <script src='http://static.opentok.com/webrtc/v2.2/js/opentok.min.js'></script>
 </head>
 <body>
-<b><ul>
+ <div class="header">
+  <b><ul>
   <li><a href="/">Logout</a></li>
   <li><a href="/home">Home</a></li>
   </ul>
-  </b>
+  </b> 
+  </div>
+
 <%= yield %>
 
+<div class="footer">
+  <p> this is the footer</p>
+</div>
+  
 </body>
 </html>
