@@ -2,7 +2,7 @@ class TimeSlotsController < ApplicationController
   # GET /time_slots
   # GET /time_slots.json
   def index
-    @time_slots = TimeSlot.where(:user_id => session[:user_id])
+    @time_slots = TimeSlot.where(:user_id => current_identity.user_id)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -41,7 +41,7 @@ class TimeSlotsController < ApplicationController
   # POST /time_slots.json
   def create
     @time_slot = TimeSlot.new(params[:time_slot])
-    @time_slot.user_id = session[:user_id]
+    @time_slot.user_id = current_identity.user_id
     respond_to do |format|
       if @time_slot.save
         format.html { redirect_to @time_slot, notice: 'Time slot was successfully created.' }

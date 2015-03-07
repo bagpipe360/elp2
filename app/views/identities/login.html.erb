@@ -1,11 +1,12 @@
-
+<!--
 <select class="login_select"> 
 <% User.all.each do |u| %>
   <option value="<%=u.id%>"> <%=u.last_name%> , <%=u.role%> </option>
   <%end%>
 </select>
-<button class="login"> Login</button>
-
+<button class="login">Login</button>
+-->
+<%=current_identity.email%>
 <script>
   $(function() {
     $('.login').click( function() {

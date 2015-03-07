@@ -8,13 +8,22 @@
       <script src='http://static.opentok.com/webrtc/v2.2/js/opentok.min.js'></script>
 </head>
 <body>
- <div class="header">
+ <!--<div class="header">
   <b><ul>
   <li><a href="/">Logout</a></li>
   <li><a href="/home">Home</a></li>
   </ul>
   </b> 
-  </div>
+  </div> -->
+<div id="user_nav">
+  <% if identity_signed_in? %>
+  Signed in as <%= current_identity.email %>.
+  <%= link_to 'Sign out', destroy_identity_session_path, :method => :delete, :class => "sign_out" %>
+  <a href="/home">HOME</a>  
+  <% else %>
+        <%= link_to 'Register', new_identity_registration_path %> or <%= link_to 'Sign in', new_identity_session_path %>
+    <% end %>
+</div>
 
 <%= yield %>
 
@@ -24,3 +33,33 @@
   
 </body>
 </html>
+<%= subscribe_to "/user_updates" %>
+
+<script>
+  PrivatePub.subscribe("/user_updates", function(data) {
+     var user_elem = $('#user_online_' + data.uid);
+     if (user_elem.length > 0) {
+       if (data.status == 'true') {
+                  console.log('true!');
+
+         user_elem.text('true');
+       }
+       else {
+                  console.log('false!');
+
+         user_elem.text('false');
+       }
+     }
+  });
+
+  $('.sign_out').click(function(event) {
+    $.ajax({url: '/update_online_status', type: 'GET', data: {'status': false}, async: false,
+            failure: function() {
+               alert('failed');  
+            },
+           success: function() {
+           }}
+          );
+  });
+  
+</script>

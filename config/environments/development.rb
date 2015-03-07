@@ -36,4 +36,7 @@ Elp2::Application.configure do
   config.assets.debug = true
   
   config.middleware.delete Rack::Lock
+  
+   config.action_mailer.default_url_options = { :host => 'http://steady-box-12-181649.use1-2.nitrousbox.com' }
+
 end

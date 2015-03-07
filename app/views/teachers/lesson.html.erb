@@ -1,6 +1,6 @@
 <h3> Welcome to the Lesson Page! </h3>
 <p> This is where the video interface will take place. </p>
-
+<p> This is a lesson for <%=@lesson.service.language_name%> at level <%=@lesson.service.level_name%> of type <%=@lesson.service.type_name%></p>
 <p> The class starts at <%=@timeslot.start_time%></p>
 <p> The class ends at <%=@timeslot.end_time%></p>
 <%if @current_time > @timeslot.end_time%>
@@ -14,16 +14,21 @@
     <p> The student has <%=@student_paid ? "" : "not" %> paid for this lesson. </p>
   <%end%>
     <p> You are the teacher. You need to <p><button id="start_lesson" style="display:<%if !@ready_to_start%>none<%end%>">Start Lesson</button> </p>
- </p>
-<p><button class="end_lesson">End Lesson</button></p>
 
+<!--<p><button class="end_lesson">End Lesson</button></p>-->
+<!--
 <button id="user_join">  Join Class </button>
 <button id="user_leave">  Leave Class </button>
-Student is
-<p id="s_ready"><% if @lesson.student_ready%>Ready<%else%>Not Ready<%end%></p>.
-<p> Your Status: <% if @lesson.teacher_ready%><button class="status ready">Ready</button>
-  <%else%><button class="status not_ready">Not Ready</button> 
-  <%end%></p>
+-->
+<p> Student is <div id="s_ready"><% if @lesson.student_ready%>Ready<%else%>Not Ready<%end%></div></p>.
+<p> Student Online?: <div id="user_online_<%=@student.id%>"><%=@student.online%></div></p>
+
+<p> Your Status: <% if @lesson.teacher_ready%> 
+  <button class="status ready">Ready</button>
+  <%else%>
+  <button class="status not_ready">Not Ready</button> 
+  <%end%>
+</p>
 <div id="chat"></div>
 <%end%>
 
@@ -86,7 +91,18 @@ Student is
   PrivatePub.subscribe("/lesson/private/<%=@lesson.id%>", function(data) {
    alert(data.msg);
   });
-  
+  /*
+  PrivatePub.subscribe("/user_updates", function(data) {
+     var student_elem = $('#student_online_' + data.uid);
+     if (student_elem.length > 0) {
+       if (data.status) {
+         student_elem.text('true');
+       }
+       else {
+         student_elem.text('false');
+       }
+     }
+  }); */
   PrivatePub.subscribe("/student_updates/<%=@lesson.id%>", function(data) {
           console.log(data);
     if (data.status == 'true') {
@@ -124,27 +140,27 @@ Student is
 
    
   
-  $('.begin_lesson').click(function() {
+  function beginLesson() {
      var now = new Date();
-    $.ajax({
-      url: '/lesson/begin',
-      data: {'start_time': now, 'lesson_id': '<%=@lesson.id%>'},
-      type: 'GET',
-      success: function(message) {
-        if (message == "Success") {
-          alert("The lesson was started at " + now);
+      $.ajax({
+        url: '/lesson/begin',
+        data: {'start_time': now, 'lesson_id': '<%=@lesson.id%>'},
+        type: 'GET',
+        success: function(message) {
+          if (message == "Success") {
+            alert("The lesson was started at " + now);
+          }
+          else {
+             alert("You cannot start a lesson at this time."); 
+          }
+        },
+        failure: function() {
+          alert('Sorry. We were not able to connect to the database.');
         }
-        else {
-           alert("You cannot start a lesson at this time."); 
-        }
-      },
-      failure: function() {
-        alert('Sorry. We were not able to connect to the database.');
-      }
-    })
-   });
+    });
+   }
   
-    $('.end_lesson').click(function() {
+    function endLesson() {
      var now = new Date();
     $.ajax({
       url: '/lesson/end',
@@ -162,7 +178,7 @@ Student is
         alert('Sorry. We were not able to connect to the database.');
       }
     })
-   });
+   };
 /*
  $(function() { 
      var client = new Faye.Client('http://steady-box-12-181649.use1-2.nitrousbox.com:9292/faye')
@@ -245,18 +261,28 @@ Student is
 		});
 	});
 
-// This is the current user, smaller screen
-session.connect(token, function(error) {
-  if (error) {
-    alert("Error connecting: ", error.code, error.message);
-  } else {
-    console.log("Connected to the session.");
-       		publisherProperties = {name: publisherName, width: pWidth, height: pHeight, resolution: videoResolution,
-	    							frameRate: videoFrameRate};
-       		publisher = OT.initPublisher('myPublisherDiv', publisherProperties);
-       		session.publish(publisher);
-  }
+     
+$('#start_lesson').click(function() {
+
+  // This is the current user, smaller screen
+  session.connect(token, function(error) {
+    if (error) {
+      alert("Error connecting: ", error.code, error.message);
+    } else {
+      console.log("Connected to the session.");
+            publisherProperties = {name: publisherName, width: pWidth, height: pHeight, resolution: videoResolution,
+                      frameRate: videoFrameRate};
+            publisher = OT.initPublisher('myPublisherDiv', publisherProperties);
+            session.publish(publisher);
+            startLesson();
+    }
+  });
 });
+     
+    $('#end_lesson').click(function() {
+      
+      endLesson();
+    });
      
      
 

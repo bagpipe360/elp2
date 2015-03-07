@@ -3,7 +3,7 @@ class TeachersController < ApplicationController
   before_filter :set_user
   
   def set_user
-    @user = User.find(session[:user_id])
+    @user = User.find(current_identity.user_id)
   end
   
 def schedule
@@ -13,7 +13,7 @@ def schedule
 end
   
   def services
-    @user = User.find(session[:user_id])
+    @user = User.find(current_identity.user_id)
     @services = @user.teacher_teaches_services
     @languages = Language.all
     @levels = Level.all
@@ -64,11 +64,12 @@ end
   end
   
   def lesson
-      @user = User.find(session[:user_id])
+      @user = User.find(current_identity.user_id)
       @teacher = true
     ### This is where I will grab the token and session id
     @current_time = Time.now
     @lesson = Lesson.find(params[:lesson_id])
+    @student = @lesson.student
     @teacher_paid = @lesson.teacher_paid
     @student_paid =  @lesson.student_paid
     @timeslot = @lesson.time_slot 

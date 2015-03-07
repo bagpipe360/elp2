@@ -11,9 +11,20 @@ class IdentitiesController < ApplicationController
   end
 
   def login
-    
-    
+ #   if !session[:user_id].blank?
+ #     user = User.find(session[:user_id])
+ #     user.online = false
+ #     user.save
+ #   end
+ #   reset_session
+ #   @channel = "/online_update_status" + @lesson_id
+ #   @message = {:user_id => user.id, :status => false}
+ #   respond_to do |f|
+ #     f.js
+ #   end
   end
+  
+  
   # GET /identities/1
   # GET /identities/1.json
   def show

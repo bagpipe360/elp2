@@ -1,4 +1,6 @@
 Elp2::Application.routes.draw do
+  devise_for :identities
+
   get "sessions/new"
 
   get "sessions/create"
@@ -30,6 +32,8 @@ Elp2::Application.routes.draw do
   get '/user/view_lesson', to: 'users#view_lesson'
   
   get '/lesson/get_video_keys', to: 'lessons#get_video_keys'
+  
+  get '/update_online_status', to: 'users#update_online_status'
   
   get '/teacher/schedule', to: 'teachers#schedule'
   get '/teacher/services', to: 'teachers#services'
@@ -100,8 +104,8 @@ Elp2::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'identities#login'
-
+ # root :to => 'identities#login'
+  root  :to => 'home#home'
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.

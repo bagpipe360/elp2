@@ -2,12 +2,12 @@ class StudentsController < ApplicationController
 
   
   def favorite_teachers
-    @user = User.find(session[:user_id])
+    @user = User.find(current_identity.user_id)
     @favorite_teachers = @user.favorite_teachers
   end
 
   def lessons
-    @user = User.find(session[:user_id])
+    @user = User.find(current_identity.user_id)
     @lessons = @user.taking_lessons
   end
   
@@ -21,7 +21,7 @@ class StudentsController < ApplicationController
   end
   
   def save_lesson
-    @user = User.find(session[:user_id])
+    @user = User.find(current_identity.user_id)
 
     return_msg = ""
     @service = Service.find(params[:service_id])
@@ -50,11 +50,12 @@ class StudentsController < ApplicationController
   end
   
   def lesson
-     @user = User.find(session[:user_id])
+     @user = User.find(current_identity.user_id)
       @teacher = false
     ### This is where I will grab the token and session id
     @current_time = Time.now
     @lesson = Lesson.find(params[:lesson_id])
+    @teacher_user = @lesson.teacher
     @teacher_paid = @lesson.teacher_paid
     @student_paid =  @lesson.student_paid
     @timeslot = @lesson.time_slot 

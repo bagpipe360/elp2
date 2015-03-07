@@ -1,13 +1,14 @@
 class HomeController < ApplicationController
-
   def home
-    if session[:user_id].blank?
-      @logged_in = false
+    case
+    when current_identity.user.nil?
+      redirect_to '/users/new'
     else
-      @logged_in = true
-      user = User.find(session[:user_id])
-      user.online = true
-      user.save
+    #  current_identity.user.online = true
+   #   current_identity.user.save
+      redirect_to '/home'
     end
   end
+
+
 end

@@ -1,0 +1,7 @@
+<div class="user_info">
+  <%=@user_block.name%> <br />
+  Online?: <div id="online_status_<%=@user_block.id%>"><%=@user_block.online%></div><br />
+</div>
+
+<%= subscribe_to "/update_online_status" %>
+

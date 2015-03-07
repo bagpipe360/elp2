@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
   
   def view_lesson
-    @user = User.find(session[:user_id])
+    @user = User.find(current_identity.user_id)
     if @user.role == "Teacher"
       @teacher = true
     else
@@ -23,7 +23,7 @@ class UsersController < ApplicationController
   
   def index
   
-      @user = User.find(session[:user_id])
+      @user = User.find(current_identity.user_id)
     if @user.blank?
       redirect_to '/login'
     else
@@ -35,17 +35,20 @@ class UsersController < ApplicationController
   end
   
   def home
-    if params[:uid].blank? && session[:user_id].blank?
-      redirect_to "/login"
-    elsif !params[:uid].blank?
-      uid = params[:uid]
-    else
-      uid = session[:user_id]
-    end
+   # if params[:uid].blank? && session[:user_id].blank?
+   #   redirect_to "/login"
+   # elsif !params[:uid].blank?
+  #    uid = params[:uid]
+  #  else
+  #    uid = session[:user_id]
+  #  end
    
-    user = User.find(uid)
-    session[:user_id] = uid
-    if user.role == "Teacher"
+  #  user = User.find(uid)
+  #  user.online = true
+  #  user.save
+  #  session[:user_id] = uid
+    
+    if current_identity.user.role == "Teacher"
       @teacher = true
     else
       @teacher = false
@@ -55,7 +58,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    @user = User.find(params[:id])
+    @user = User.find(current_identity.user_id)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -83,9 +86,14 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(params[:user])
-
+    
     respond_to do |format|
       if @user.save
+        if identity_signed_in?
+          current_identity.user_id = @user.id
+          current_identity.save
+        end
+          
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render json: @user, status: :created, location: @user }
       else
@@ -98,7 +106,7 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.json
   def update
-    @user = User.find(params[:id])
+    @user = User.find(current_identity.user_id)
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
@@ -110,6 +118,25 @@ class UsersController < ApplicationController
       end
     end
   end
+
+  def update_online_status
+    user = User.find(current_identity.user_id)
+    status = params[:status]
+
+    @channel = "/user_updates"
+    if status == 'true'
+      user.online = true
+    else
+      user.online = false
+    end
+    if user.save
+      @message = {:uid => user.id, :status => status}
+      respond_to do |f|
+        f.js
+      end
+    end
+
+end
 
   # DELETE /users/1
   # DELETE /users/1.json

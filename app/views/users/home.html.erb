@@ -10,3 +10,17 @@ Welcome! <br />
 <a href="users">Profile</a> <br />
 <a href="student/search">Browse Classes</a> <br />
 <%end%>
+
+<script>
+  var referredPage = document.referrer.split('/');
+  referredPage = referredPage[referredPage.length-1];
+  if (referredPage == 'sign_in') {
+    $.ajax({url: '/update_online_status', type: 'GET', data: {'status': true}, async: false,
+            failure: function() {
+               alert('failed');  
+            },
+           success: function() {
+           }});
+  }
+  
+</script>

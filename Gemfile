@@ -20,6 +20,11 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+gem 'therubyracer'
+gem 'devise', '~> 3.4.1'
+gem 'omniauth'
+gem 'omniauth-digitalocean'
+
 gem 'jquery-rails'
 
 
