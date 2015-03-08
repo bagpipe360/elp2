@@ -105,7 +105,7 @@ end
       lesson.teacher_ready = false
     end
     if lesson.save
-      if lesson.student_ready and status == 'true'
+      if lesson.student_ready and status == 'true' and lesson.student.online
         start_lesson = true
       else
         start_lesson = false

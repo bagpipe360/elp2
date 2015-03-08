@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150307172034) do
+ActiveRecord::Schema.define(:version => 20150308031237) do
 
   create_table "applications", :force => true do |t|
     t.integer  "user_id"
@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(:version => 20150307172034) do
     t.integer  "service_id"
     t.boolean  "student_ready", :default => false
     t.boolean  "teacher_ready", :default => false
+    t.boolean  "started"
   end
 
   create_table "levels", :force => true do |t|

@@ -95,7 +95,7 @@ class StudentsController < ApplicationController
       lesson.student_ready = false
     end
     if lesson.save
-      if lesson.teacher_ready and status == 'true'
+      if lesson.teacher_ready and status == 'true' and lesson.teacher.online
         start_lesson = true
       else
         start_lesson = false

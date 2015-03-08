@@ -1,9 +1,5 @@
 class LessonsController < ApplicationsController
-  
 
-
-  
-  
   def index
     @lessons = Lesson.all
 
@@ -115,10 +111,10 @@ class LessonsController < ApplicationsController
    end
   
   def get_video_keys
+    puts 'get video keys'
 		keysHash = {}
 		config_opentok
     puts params
-		#temporary settings to develop video chatting
     @lesson = Lesson.find(params[:lid])
     if @lesson.session_id.blank?
       session = @opentok.create_session(['p2p.preference','enabled'])
@@ -128,6 +124,8 @@ class LessonsController < ApplicationsController
     else
       session_id = @lesson.session_id
       token = @lesson.token
+      puts "check token info"
+      puts token
     end
 				
     keysHash[:sessionID] = @lesson.session_id

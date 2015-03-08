@@ -72,6 +72,9 @@
     
 </div><!--row-->
 </div> <!--Container-->
+
+  <button class="toggleVideo" value=0>Toggle Video </button>
+
 <style>
   .ready {
     background-color: 'green';
@@ -82,49 +85,9 @@
 </style>
 <script>
   
-  
-   
-    PrivatePub.subscribe("/lesson/private/<%=@lesson.id%>", function(data) {
-   alert(data.msg);
-  });
-   
+$(document).ready(function() {
+ //OPENTOK
 
-    PrivatePub.subscribe("/teacher_updates/<%=@lesson.id%>", function(data) {
-      console.log(data);
-      if (data.status == 'true') {
-        $('#t_ready').text("Ready.");
-      } 
-      else {
-       $('#t_ready').text("Not Ready.");
-      }
-      if (data.start_lesson) {
-        $('#start_lesson').show();
-      }
-      else {
-        $('#start_lesson').hide();
-      }
-      });   
- 
-  $('body').on('click', '.not_ready', function() {
-    $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'true'} });
-    $(this).removeClass('not_ready').addClass('ready');
-    $(this).text('Ready');
-      if ($('#t_ready').text() == 'Ready') {
-       $('#start_lesson').css({'display':''});
-     }
-   });
-
-   $('body').on('click', '.ready', function() {
-     $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'false'} });
-     $(this).removeClass('ready').addClass('not_ready');
-     $(this).text('Not Ready');
-     console.log($('#t_ready').text());
-    $('#start_lesson').css({'display':'none'});
-    });
-
-   //OPENTOK
-
-   $(document).ready(function() {
       // Initialize API key, session, and token...
       // Think of a session as a room, and a token as the key to get in to the room
       // Sessions and tokens are generated on your server and passed down to the client
@@ -143,11 +106,18 @@
 	  var videoResolution = "1280x720";
 	  var videoFrameRate = 30;	
 	  var role = 'student'; // '<%=@user.role%>';
-	
-  
-     
+	  var otherUserReady;
+    var streamStarted = false;
 
-  $.ajax({
+  
+  if ($('#t_ready').text() == 'Ready') {
+       otherUserReady = true;
+     }
+  else {
+       otherUserReady = false;
+  }
+  
+    $.ajax({
     	method: 'GET',
         url: '/lesson/get_video_keys?lid=<%=@lesson.id%>',
         dataType: 'json',	
@@ -161,6 +131,47 @@
     });
   
  
+   
+    PrivatePub.subscribe("/lesson/private/<%=@lesson.id%>", function(data) {
+   alert(data.msg);
+  });
+   
+
+    PrivatePub.subscribe("/teacher_updates/<%=@lesson.id%>", function(data) {
+      console.log(data);
+      if (data.status == 'true') {
+        otherUserReady = true;
+        $('#t_ready').text("Ready.");
+      } 
+      else {
+        otherUserReady = false;
+       $('#t_ready').text("Not Ready.");
+      }
+      if (data.start_lesson) {
+        $('#start_lesson').show();
+      }
+      else {
+        $('#start_lesson').hide();
+      }
+      });   
+ 
+  $('body').on('click', '.not_ready', function() {
+    $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'true'} });
+    $(this).removeClass('not_ready').addClass('ready');
+    $(this).text('Ready');
+     startVideo();
+   });
+
+   $('body').on('click', '.ready', function() {
+     $.ajax({ url:'/student/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'false'} });
+     $(this).removeClass('ready').addClass('not_ready');
+     $(this).text('Not Ready');
+   });
+
+  
+     
+
+
 /*
   session.connect(token, function(error) {
     var publisher = OT.initPublisher();
@@ -170,51 +181,57 @@
      
   // This is the other user, connecting in
 	session.on("streamCreated", function (event) {
-	  alert('other user created stream');
-		stream = event.stream;
-	  subscriberProperties = {insertMode: "append", height: sHeight, width: sWidth};
-	 	subscriber = session.subscribe(stream, 'subscriberContainer', subscriberProperties, function (error) {
-  	if (error) {
-    	console.log(error);
-  	}
-    else {
-      console.log("Subscriber added.");
-  	}
-		});
+    if (confirm('Start class?')) {
+        if (!streamStarted) {
+         publishVideo();
+        }
+        stream = event.stream;
+        subscriberProperties = {insertMode: "append", height: sHeight, width: sWidth};
+        subscriber = session.subscribe(stream, 'subscriberContainer', subscriberProperties, function (error) {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log("Subscriber added.");
+        }
+        });
+  }
 	});
-   
-     
-     
-     
+
      // This is the current user, smaller screen
- $('#start_lesson').click(function() {
-     console.log('clicked');
-    session.connect(token, function(error) {
+function startVideo() {
+     session.connect(token, function(error) {
     if (error) {
     alert("Error connecting: ", error.code, error.message);
       } 
      else {
-      console.log("Connected to the session.");
        		publisherProperties = {name: publisherName, width: pWidth, height: pHeight, resolution: videoResolution,
 	    							frameRate: videoFrameRate};
-       		publisher = OT.initPublisher('myPublisherDiv', publisherProperties);
-       		session.publish(publisher);
+           if (otherUserReady) {
+              publishVideo();
+           }
       }
      }); 
-  });
+  };
 
+  function publishVideo() {
+      publisher = OT.initPublisher('myPublisherDiv', publisherProperties);
+     session.publish(publisher);
+    streamStarted = true;
+  }
 
-     
+  function endVideo() {
+		session.unsubscribe(stream);
+		session.unpublish(publisher);
+  }
      
      
 /*
 	$('.unsubscribe').click(function() {
-		session.unsubscribe(stream);
 	});
 	
 	
 	$('.unpublish').click(function() {
-		session.unpublish(publisher);
 	});
 	
 	$('.resizeVideo').click(function() {
@@ -222,7 +239,7 @@
     	pubElement.css("width","100");
     	pubElement.css("height","100");
   	});
-  	
+  	*/
   	$('.toggleVideo').click(function() {
   		if ($(this).val() == 0 ) {
   			$(this).val(1);
@@ -235,7 +252,8 @@
   			 publisher.publishVideo(true);
   		}
   	});
-  	
+  
+  	/*
   	
   	var start = new Date;
 

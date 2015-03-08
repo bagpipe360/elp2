@@ -74,6 +74,8 @@
     
 </div><!--row-->
 </div> <!--Container-->
+  
+  <button class="toggleVideo" value=0>Toggle Video </button>
 <%= subscribe_to "/lesson/private/#{@lesson.id}" %>
 <%= subscribe_to "/student_updates/#{@lesson.id}" %>
 
@@ -85,31 +87,65 @@
   <%= submit_tag "Send" %>
 <% end %>
 <script>
-  
-  
+   
+   $(document).ready(function() {
+      // Initialize API key, session, and token...
+      // Think of a session as a room, and a token as the key to get in to the room
+      // Sessions and tokens are generated on your server and passed down to the client
+      var apiKey = "45159872";
+      var sessionId;// = "2_MX40NTE1OTg3Mn5-MTQyNDM5MjUyNzgxOH5BbDV0blZxOHkxWXZGUGJvallMOVk1WUR-fg";
+      var token;// =     "T1==cGFydG5lcl9pZD00NTE1OTg3MiZzaWc9ZGZlNmM1NGNjNWRiYjI5MmU2ODE3ZjBjNTZlYjNkYzA0YTExYjIzNzpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5URTFPVGczTW41LU1UUXlORE01TWpVeU56Z3hPSDVCYkRWMGJsWnhPSGt4V1haR1VHSnZhbGxNT1ZrMVdVUi1mZyZjcmVhdGVfdGltZT0xNDI0MzkyNTU3Jm5vbmNlPTAuNTc5MjQ3MjAzODcxOTM3Ng==";
+	  var session;
+	  var subscriber;
+	  var stream;
+	  var subscriberProperties;
+	  var publisherName;
+	  var pHeight = 100;
+	  var pWidth = 150;
+	  var sHeight = 400;
+	  var sWidth = 600;
+	  var videoResolution = "1280x720";
+	  var videoFrameRate = 30;	
+  	var otherUserReady;
+    var streamStarted = false;
+     
+ if ($('#s_ready').text() == 'Ready') {
+       otherUserReady = true;
+     }
+  else {
+       otherUserReady = false;
+  }
+     
+     
+   $.ajax({
+    	method: 'GET',
+        url: '/lesson/get_video_keys?lid=<%=@lesson.id%>',
+        dataType: 'json',	
+        async: false,
+        success: function(keysHash) {
+        	console.log(keysHash);
+       // 	alert(keysHash);
+        	publisherName = keysHash.studentName;
+       		sessionID = keysHash.sessionID;
+       		token = keysHash.token;
+       		session = OT.initSession(apiKey, sessionID);
+    }
+    });
+
   
   PrivatePub.subscribe("/lesson/private/<%=@lesson.id%>", function(data) {
    alert(data.msg);
   });
-  /*
-  PrivatePub.subscribe("/user_updates", function(data) {
-     var student_elem = $('#student_online_' + data.uid);
-     if (student_elem.length > 0) {
-       if (data.status) {
-         student_elem.text('true');
-       }
-       else {
-         student_elem.text('false');
-       }
-     }
-  }); */
+
   PrivatePub.subscribe("/student_updates/<%=@lesson.id%>", function(data) {
           console.log(data);
     if (data.status == 'true') {
         $('#s_ready').text("Ready");
+        otherUserReady = true;
       } 
     else {
        $('#s_ready').text("Not Ready");
+        otherUserReady = false;
     }
     if (data.start_lesson) {
         $('#start_lesson').show();
@@ -125,17 +161,14 @@
     $.ajax({ url:'/teacher/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'true'} });
     $(this).removeClass('not_ready').addClass('ready');
     $(this).text('Ready');
-    console.log($('#s_ready').text());
-     if ($('#s_ready').text() == 'Ready') {
-       $('#start_lesson').css({'display':''});
-     }
+    startVideo();
    });
 // Teacher is not ready for class
    $('body').on('click', '.ready', function() {
      $.ajax({ url:'/teacher/update_lesson_status', type:'POST', data: {'lid': '<%=@lesson.id%>', 'ready': 'false'} });
      $(this).removeClass('ready').addClass('not_ready');
      $(this).text('Not Ready');
-    $('#start_lesson').css({'display':'none'});
+    //$('#start_lesson').css({'display':'none'});
     });
 
    
@@ -178,130 +211,59 @@
         alert('Sorry. We were not able to connect to the database.');
       }
     })
-   };
-/*
- $(function() { 
-     var client = new Faye.Client('http://steady-box-12-181649.use1-2.nitrousbox.com:9292/faye')
-     client.subscribe("/lessons/new", function(data) {
-       if (data.teacher) {
-         alert('Teacher is ready to start the class!');
-       }
-       else if (data.student) {
-         alert('Teacher is ready to start the class!');
-       
-       }
-                console.log(data);
-
-       });
-                      
-     }); 
-    
-
+   }
  
-  $('#user_join').click(function(){
-      alert('user clicked');
-      // Publish the message to the public channel
-      client.publish('/lessons/new', {
-        username: 'hey',
-        msg: 'msg'
-      });
-    });
-
-*/
  
-  
-   $(document).ready(function() {
-      // Initialize API key, session, and token...
-      // Think of a session as a room, and a token as the key to get in to the room
-      // Sessions and tokens are generated on your server and passed down to the client
-      var apiKey = "45159872";
-      var sessionId;// = "2_MX40NTE1OTg3Mn5-MTQyNDM5MjUyNzgxOH5BbDV0blZxOHkxWXZGUGJvallMOVk1WUR-fg";
-      var token;// =     "T1==cGFydG5lcl9pZD00NTE1OTg3MiZzaWc9ZGZlNmM1NGNjNWRiYjI5MmU2ODE3ZjBjNTZlYjNkYzA0YTExYjIzNzpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5URTFPVGczTW41LU1UUXlORE01TWpVeU56Z3hPSDVCYkRWMGJsWnhPSGt4V1haR1VHSnZhbGxNT1ZrMVdVUi1mZyZjcmVhdGVfdGltZT0xNDI0MzkyNTU3Jm5vbmNlPTAuNTc5MjQ3MjAzODcxOTM3Ng==";
-	  var session;
-	  var subscriber;
-	  var stream;
-	  var subscriberProperties;
-	  var publisherName;
-	  var pHeight = 100;
-	  var pWidth = 150;
-	  var sHeight = 400;
-	  var sWidth = 600;
-	  var videoResolution = "1280x720";
-	  var videoFrameRate = 30;	
-	  var role = 'student'; // '<%=@user.role%>';
-	
-  
-  	 $.ajax({
-    	method: 'GET',
-        url: '/lesson/get_video_keys?lid=<%=@lesson.id%>',
-        dataType: 'json',	
-        async: false,
-        success: function(keysHash) {
-        	console.log(keysHash);
-       // 	alert(keysHash);
-        	publisherName = keysHash.studentName;
-       		sessionID = keysHash.sessionID;
-       		token = keysHash.token;
-       		session = OT.initSession(apiKey, sessionID);
-    }
-    });
 
 
 // This is the other user, connecting in
 	session.on("streamCreated", function (event) {
-		alert('student created stream');
-		stream = event.stream;
-	    subscriberProperties = {insertMode: "append", height: sHeight, width: sWidth};
-	 	subscriber = session.subscribe(stream, 'subscriberContainer', subscriberProperties, function (error) {
-  		if (error) {
-    		console.log(error);
-  		} else {
-    		console.log("Subscriber added.");
-  		}
-		});
-	});
-
-     
-$('#start_lesson').click(function() {
-
-  // This is the current user, smaller screen
-  session.connect(token, function(error) {
-    if (error) {
-      alert("Error connecting: ", error.code, error.message);
-    } else {
-      console.log("Connected to the session.");
-            publisherProperties = {name: publisherName, width: pWidth, height: pHeight, resolution: videoResolution,
-                      frameRate: videoFrameRate};
-            publisher = OT.initPublisher('myPublisherDiv', publisherProperties);
-            session.publish(publisher);
-            startLesson();
-    }
-  });
-});
-     
-    $('#end_lesson').click(function() {
-      
-      endLesson();
+		if (confirm('Start class?')) {
+       if (!streamStarted) {
+        publishVideo();
+      }
+      stream = event.stream;
+      subscriberProperties = {insertMode: "append", height: sHeight, width: sWidth};
+      subscriber = session.subscribe(stream, 'subscriberContainer', subscriberProperties, function (error) {
+      if (error) {
+        console.log(error);
+      } 
+      else {
+        console.log("Subscriber added.");
+      }
     });
+	}
+  });
      
-     
+function startVideo() {
+    session.connect(token, function(error) {
+    if (error) {
+    alert("Error connecting: ", error.code, error.message);
+      } 
+     else {
+       		publisherProperties = {name: publisherName, width: pWidth, height: pHeight, resolution: videoResolution,
+	    							frameRate: videoFrameRate};
+          if (otherUserReady) {
+              publishVideo();
+           }
+      }
+     }); 
+  };
 
-	$('.unsubscribe').click(function() {
-		session.unsubscribe(stream);
-	});
-	
-	
-	$('.unpublish').click(function() {
-		session.unpublish(publisher);
-	});
-	
-	$('.resizeVideo').click(function() {
-    	var pubElement = $('#myPublisherDiv');
-    	pubElement.css("width","100");
-    	pubElement.css("height","100");
-  	});
-  	
-  	$('.toggleVideo').click(function() {
+  function publishVideo() {
+      publisher = OT.initPublisher('myPublisherDiv', publisherProperties);
+      session.publish(publisher);
+      streamStarted = true;
+  }
+
+     
+    function endLession() {
+		  session.unsubscribe(stream);
+		  session.unpublish(publisher);
+
+    }
+     
+   $('.toggleVideo').click(function() {
   		if ($(this).val() == 0 ) {
   			$(this).val(1);
   			$(this).html('Turn Video On');
@@ -313,6 +275,18 @@ $('#start_lesson').click(function() {
   			 publisher.publishVideo(true);
   		}
   	});
+     
+/*
+	
+
+	
+	$('.resizeVideo').click(function() {
+    	var pubElement = $('#myPublisherDiv');
+    	pubElement.css("width","100");
+    	pubElement.css("height","100");
+  	});
+  	
+
   	
   	
   	var start = new Date;
@@ -320,7 +294,7 @@ $('#start_lesson').click(function() {
 	setInterval(function() {
     	$('.Timer').text((new Date - start) / 1000 + " Seconds");
 	}, 1000);
-	
+	*/
    });
 
 </script>
