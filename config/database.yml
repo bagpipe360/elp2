@@ -21,7 +21,7 @@ test: &test
 production:
   adapter: postgresql
   encoding: unicode
-  database: appname-prod
+  database: database_production
   pool: 5
   host: localhost
   username: action
