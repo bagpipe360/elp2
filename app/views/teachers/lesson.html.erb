@@ -1,4 +1,4 @@
-<h3> Welcome to the Lesson Page! </h3>
+<h3> Lesson Page for Teacher </h3>
 <p> This is where the video interface will take place. </p>
 <p> This is a lesson for <%=@lesson.service.language_name%> at level <%=@lesson.service.level_name%> of type <%=@lesson.service.type_name%></p>
 <p> The class starts at <%=@timeslot.start_time%></p>
@@ -147,14 +147,16 @@
        $('#s_ready').text("Not Ready");
         otherUserReady = false;
     }
-    if (data.start_lesson) {
+  /*  if (data.start_lesson) {
         $('#start_lesson').show();
       }
       else {
         $('#start_lesson').hide();
-      }
+      } */
   });
 
+     
+  
 
   //Teacher is ready for class
   $('body').on('click', '.not_ready', function() {
@@ -275,6 +277,12 @@ function startVideo() {
   			 publisher.publishVideo(true);
   		}
   	});
+     
+ // If user was ready on entrance- run startVideo
+     if ($('.status').text() == 'Ready' && otherUserReady == true) {
+       startVideo();
+     }
+     
      
 /*
 	

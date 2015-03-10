@@ -168,6 +168,7 @@ GEM
       activesupport (>= 2.3.2)
       cocaine (>= 0.0.2)
       mime-types
+    pg (0.18.1)
     polyglot (0.3.5)
     private_pub (1.0.3)
       faye
@@ -186,6 +187,11 @@ GEM
       activesupport (= 3.2.18)
       bundler (~> 1.0)
       railties (= 3.2.18)
+    rails_12factor (0.0.3)
+      rails_serve_static_assets
+      rails_stdout_logging
+    rails_serve_static_assets (0.0.4)
+    rails_stdout_logging (0.0.3)
     railties (3.2.18)
       actionpack (= 3.2.18)
       activesupport (= 3.2.18)
@@ -271,8 +277,10 @@ DEPENDENCIES
   omniauth-digitalocean
   opentok (~> 2.2)
   paperclip (~> 2.7)
+  pg
   private_pub
   rails (= 3.2.18)
+  rails_12factor
   redis
   sass-rails (~> 3.2.3)
   selenium-webdriver
