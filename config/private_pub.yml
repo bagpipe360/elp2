@@ -5,6 +5,6 @@ test:
   server: "http://steady-box-12-181649.use1-2.nitrousbox.com:9292/faye"
   secret_token: "secret"
 production:
-  server: "http://sheltered-dusk-8612.herokuapp.com/faye"
+  server: "http://elp-private-pub-server.herokuapp.com/faye"
   secret_token: "f94d3fcb293948b6b44559ead07666e4c162c4db9dc4d690b609553199e09c96"
   signature_expiration: 86400 # one hour
