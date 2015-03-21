@@ -6,10 +6,11 @@ gem 'rails', '3.2.18'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 gem "heroku"
 group :development do
-  gem 'sqlite3'
+ # gem 'sqlite3'
 end
-group :production do
   gem 'pg'
+
+group :production do
     gem 'rails_12factor'
 
 end
