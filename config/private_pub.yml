@@ -7,4 +7,4 @@ test:
 production:
   server: "http://sheltered-dusk-8612.herokuapp.com/faye"
   secret_token: "f94d3fcb293948b6b44559ead07666e4c162c4db9dc4d690b609553199e09c96"
-  signature_expiration: 3600 # one hour
+  signature_expiration: 86400 # one hour
