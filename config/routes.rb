@@ -6,22 +6,12 @@ Elp2::Application.routes.draw do
   get "sessions/create"
 
   resources :interviews
-
-
   resources :interview_questions
-
-
   resources :applications
-
-
   resources :identities
-  
+  resources :lesson_reviews
   resources :lessons
-
-
   resources :time_slots
-
-
   resources :users
   
   get  '/login' => 'sessions#new', :as => :login
@@ -52,6 +42,7 @@ Elp2::Application.routes.draw do
   get '/student/lesson_ready', to: 'students#lesson_ready'
   post '/student/new_message' => 'students#new_message', :as => :new_message
   post '/student/update_lesson_status', to: 'students#update_lesson_status'
+  get '/student/review_lesson', to: 'lesson_reviews#review_lesson'
   get '/lesson/begin', to: 'lessons#begin_lesson'
   get '/lesson/end', to: 'lessons#end_lesson'
   

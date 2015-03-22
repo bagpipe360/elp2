@@ -9,6 +9,7 @@
     <%end%></td></tr>
   <tr><td>Other User's Status</td><td><div id="t_ready"><%=@teacher_status%></div></td></tr>
   <tr><td>Other User Online?</td><td><div id="user_online_<%=@teacher_user.id%>"><%=@teacher_user.online%></div></td></tr>
+  <tr><td>End Lesson</td><td><a href="/student/review_lesson?lid=<%=@lesson.id%>">End Lesson</a></td></tr>
 <!---<p><button id="start_lesson" style="display:<%if !@ready_to_start%>none<%end%>">Start Lesson</button> </p>--->
 </table>
 
@@ -181,8 +182,11 @@ function startVideo() {
   }
 
   function endVideo() {
-		session.unsubscribe(stream);
+		/*session.unsubscribe(stream);
 		session.unpublish(publisher);
+    */
+   window.href.location = '/review_lesson?id=<%@lesson.id%>'
+    
   }
      
      
@@ -227,92 +231,6 @@ function startVideo() {
 */	
    });
      
-     ///////////////
-
-   /*
-  $('.start_lesson').click(function() {
-     var now = new Date();
-    $.ajax({
-      url: '/lesson/begin',
-      data: {'start_time': now, 'lesson_id': '<%=@lesson.id%>'},
-      type: 'GET',
-      success: function(message) {
-        if (message == "Success") {
-          alert("The lesson was started at " + now);
-        }
-        else {
-           alert("You cannot start a lesson at this time."); 
-        }
-      },
-      failure: function() {
-        alert('Sorry. We were not able to connect to the database.');
-      }
-    })
-   });
   
-    $('.end_lesson').click(function() {
-     var now = new Date();
-    $.ajax({
-      url: '/lesson/end',
-      data: {'end_time': now, 'lesson_id': '<%=@lesson.id%>'},
-      type: 'GET',
-      success: function(message) {
-        if (message == "Failure") {
-          alert("You cannot end the lesson at this time."); 
-        }
-        else {
-          alert("The lesson was ended at " + now + ". The total time was " + message +" minutes.");
-        }
-      },
-      failure: function() {
-        alert('Sorry. We were not able to connect to the database.');
-      }
-    })
-   });
-
- $(function() { 
-     var client = new Faye.Client('http://steady-box-12-181649.use1-2.nitrousbox.com:9292/faye')
-     client.subscribe("/lessons/new", function(data) {
-       if (data.teacher) {
-         alert('Teacher is ready to start the class!');
-       }
-       else if (data.student) {
-         alert('Teacher is ready to start the class!');
-       
-       }
-                console.log(data);
-
-       });
-                      
-     }); 
-    
-
- 
-  $('#user_join').click(function(){
-      // Publish the message to the public channel
-    $.ajax({
-      url: '/student/lesson_ready',
-      type: 'GET',
-      data: {'student_id' : '<%=@user_id%>'},
-      success: function(data) {
-        if (data == 'Success') {
-          client.publish('/lessons/new', {
-            username: 'hey',
-            msg: 'msg'
-          });
-        }
-        else {
-          alert('Unable to set status to ready at this time.');
-        }
-      },
-      failure: function() {
-        alert('Unable to connect to database.');
-      }
-    });
-
-    });
-
-
- */
-
+  
 </script>

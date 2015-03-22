@@ -15,7 +15,7 @@
   <%end%>
     <p> You are the teacher. You need to <p><button id="start_lesson" style="display:<%if !@ready_to_start%>none<%end%>">Start Lesson</button> </p>
 
-<!--<p><button class="end_lesson">End Lesson</button></p>-->
+<p><button id="end_lesson" style="display:none">End Lesson</button></p>
 <!--
 <button id="user_join">  Join Class </button>
 <button id="user_leave">  Leave Class </button>
@@ -207,6 +207,9 @@
         }
         else {
           alert("The lesson was ended at " + now + ". The total time was " + message +" minutes.");
+          //	session.unsubscribe(stream);
+		      //  session.unpublish(publisher);
+          window.location.href = "/home";
         }
       },
       failure: function() {
@@ -256,15 +259,11 @@ function startVideo() {
       publisher = OT.initPublisher('myPublisherDiv', publisherProperties);
       session.publish(publisher);
       streamStarted = true;
+      $('#end_lesson').show();
   }
 
      
-    function endLession() {
-		  session.unsubscribe(stream);
-		  session.unpublish(publisher);
-
-    }
-     
+       
    $('.toggleVideo').click(function() {
   		if ($(this).val() == 0 ) {
   			$(this).val(1);
@@ -277,6 +276,10 @@ function startVideo() {
   			 publisher.publishVideo(true);
   		}
   	});
+     
+     $('#end_lesson').click(function() {
+       endLesson();
+     })
      
  // If user was ready on entrance- run startVideo
      if ($('.status').text() == 'Ready' && otherUserReady == true) {
