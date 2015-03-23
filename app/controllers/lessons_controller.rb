@@ -147,8 +147,8 @@ class LessonsController < ApplicationsController
   private
 
 	def config_opentok
-		if @opentok.nil?
-			@opentok = OpenTok::OpenTok.new '45159872', '82a9cdc2ecd85984db36be7975afee1fded7143c'
+		if @opentok.nil? 
+			@opentok = OpenTok::OpenTok.new '45188672', '63b02dc234a56ada8d0aeeed1f90fb8930efaffd'
 
 		end
 	end
