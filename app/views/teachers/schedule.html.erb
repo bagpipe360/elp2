@@ -3,7 +3,7 @@
 <%lesson = Lesson.where(:time_slot_id => ts.id)%>
 <%if !lesson.blank? %>
 <p> This time slot is booked.  
-<a href="/teacher/lesson?lesson_id=<%=lesson.first.id%>">View Lesson</a> <br />
+<a href="/lesson/lesson?lesson_id=<%=lesson.first.id%>">View Lesson</a> <br />
 </p>
 <%end%>
 <%= ts.start_time%> <br />

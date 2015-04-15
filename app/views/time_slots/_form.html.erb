@@ -14,11 +14,11 @@
 
   <div class="field">
     <%= f.label :start_time %><br />
-    <%= f.datetime_select :start_time %>
+    <%= f.datetime_select :start_time, {minute_step: 15, ampm: true} %>
   </div>
   <div class="field">
     <%= f.label :end_time %><br />
-    <%= f.datetime_select :end_time %>
+    <%= f.datetime_select :end_time, {minute_step: 15, ampm: true} %>
   </div>
   <div class="actions">
     <%= f.submit %>

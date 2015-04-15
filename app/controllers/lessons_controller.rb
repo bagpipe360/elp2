@@ -144,6 +144,153 @@ class LessonsController < ApplicationsController
 		render :json => keysHash.to_json	
 	end
   
+  def new_message
+    @lesson_id = params[:lid]
+    @other_user_id = params[:uid]
+    @channel = "/lesson/private/" + @lesson_id.to_s + "/" + @other_user_id.to_s
+    puts 'Check channel' + @channel
+    @message = {:msg => params[:message]}
+    respond_to do |f|
+      f.js
+    end
+  end
+  
+  
+ def update_lesson_status
+    puts params
+   @user = User.find(current_identity.user_id)
+    @lesson_id = params[:lid]
+    lesson = Lesson.find(@lesson_id)
+    status = params[:ready]
+   @channel = "/other_user_updates/" + @lesson_id.to_s + "/" + @user.id.to_s
+    if status == 'true'
+      lesson.student_ready = true
+    else
+      lesson.student_ready = false
+    end
+    if lesson.save
+      if lesson.teacher_ready and status == 'true' and lesson.teacher.online
+        start_lesson = true
+      else
+        start_lesson = false
+      end
+      @message = {:status => status, :start_lesson => start_lesson}
+      puts @message
+      respond_to do |f|
+        f.js
+      end
+    end
+  end
+    
+  def lesson
+     user = User.find(current_identity.user_id)
+#      @teacher = false
+    ### This is where I will grab the token and session id
+    @current_time = Time.now
+    lesson = Lesson.find(params[:lesson_id])
+    @lesson_id = lesson.id
+    @user_id = user.id
+    @pretty_time_till = lesson.pretty_time_till
+    if lesson.teacher_ready
+      @teacherStatus = 'Ready'
+    else
+      @teacherStatus = 'Not Ready'
+    end
+    if lesson.student_ready
+      @studentStatus = 'Ready'
+    else
+      @studentStatus = 'Not Ready'
+    end
+    if lesson.teacher_ready and lesson.student_ready
+      @ready_to_start = true
+    else
+      @ready_to_start = false
+    end
+    if user == lesson.teacher
+      @otherUser = lesson.student
+      @userStatus = @teacherStatus
+      @otherUserStatus = @studentStatus
+      @typeOfUser = 'Teacher'
+    else
+      @otherUser = lesson.teacher
+      @userStatus = @studentStatus
+      @otherUserStatus = @teacherStatus
+      @typeOfUser = 'Student'
+    end
+    #@teacher_user = @lesson.teacher
+    #@teacher_paid = @lesson.teacher_paid
+    #@student_paid =  @lesson.student_paid
+    timeslot = lesson.time_slot 
+    @start_time = timeslot.pretty_start
+    @end_time =timeslot.pretty_end
+    case lesson.class_time_state
+    when 'missed'
+      @missed_class = true
+      @message = "This class was missed."
+    when 'taken'
+      @taken_class = true
+      @message = "This class was taken"
+    when 'scheduled'
+      @scheduled_class = true
+      @message = "This class is currently scheduled"
+    when 'cancelled'
+      @cancelled_class = true
+      @message = "This class was cancelled"
+    end
+      #There are different rules on whether a teacher or student can cancel a class
+    @show_cancel_lesson = lesson.allow_lesson_cancel
+  end
+  
+    def class_time_state
+    #A class can be missed, taken, scheduled, rescheduled, or cancelled.
+    if self.missed
+      'missed'
+    elsif self.taken
+      'taken'
+    elsif self.scheduled
+      'scheduled'
+    #elsif self.rescheduled
+      #'rescheduled
+    elsif self.cancelled
+      'cancelled'
+    end
+  end
+  
+  
+  def cancel_class_teacher
+    lesson = Lesson.find(params[:lid])
+    lesson.cancel('teacher')
+    lesson.save
+    flash[:notice] = "Lesson successfully cancelled."
+    redirect_to '/teacher/schedule'
+  end
+  
+  def cancel_class_student
+    lesson = Lesson.find(params[:lid])
+    lesson.cancel('student')
+    lesson.save
+    flash[:notice] = "Lesson successfully cancelled."
+  #  redirect_to '/teacher/schedule'
+  end
+  
+  def end_lesson
+    #need time class was taken and cost
+    lesson = Lesson.find(params[:lesson])
+    lesson.end
+    #return time class was taken
+  end
+    
+    def lesson_cost
+      lesson = Lesson.find(params[:lesson])
+      lesson.calculate_cost
+    end
+    
+    def report_problem
+      lesson = Lesson.find(params[:lesson])
+      lesson.report_problem(params[:problem])
+    end
+      
+      
   private
 
 	def config_opentok

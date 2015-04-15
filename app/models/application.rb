@@ -4,4 +4,6 @@ class Application < ActiveRecord::Base
   def self.submitted
     where(:status => 'submitted')
   end
+  
+
 end

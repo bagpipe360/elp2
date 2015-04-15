@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150321191708) do
+ActiveRecord::Schema.define(:version => 20150405211857) do
 
   create_table "applications", :force => true do |t|
     t.integer  "user_id"
@@ -88,6 +88,13 @@ ActiveRecord::Schema.define(:version => 20150321191708) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "lesson_problems", :force => true do |t|
+    t.text     "problem"
+    t.integer  "lesson_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "lesson_reviews", :force => true do |t|
     t.integer  "lesson_id"
     t.integer  "score"
@@ -113,6 +120,8 @@ ActiveRecord::Schema.define(:version => 20150321191708) do
     t.boolean  "student_ready", :default => false
     t.boolean  "teacher_ready", :default => false
     t.boolean  "started"
+    t.boolean  "cancelled",     :default => false
+    t.float    "rate"
   end
 
   create_table "levels", :force => true do |t|

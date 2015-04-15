@@ -51,6 +51,9 @@ gem 'private_pub'
 # To use Jbuilder templates for JSON
 gem 'jbuilder'
 
+#validate dates
+gem 'validates_timeliness', '~> 3.0'
+gem 'time_diff', '~> 0.3.0'
 # Use unicorn as the app server
 # gem 'unicorn'
 

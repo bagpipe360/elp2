@@ -29,7 +29,7 @@ Elp2::Application.routes.draw do
   get '/teacher/services', to: 'teachers#services'
   get '/teacher/save_service', to: 'teachers#subscribe_to_service'
   get '/teacher/lesson', to: 'teachers#lesson'
-  post '/teacher/new_message' => 'teachers#new_message', :as => :new_message
+  #post '/teacher/new_message' => 'teachers#new_message', :as => :new_message
   post '/teacher/update_lesson_status', to: 'teachers#update_lesson_status'
 
   get 'student/favorite_teachers', to: 'students#favorite_teachers'
@@ -40,11 +40,25 @@ Elp2::Application.routes.draw do
   get 'student/save_lesson', to: 'students#save_lesson'
   get '/student/lesson', to: 'students#lesson'
   get '/student/lesson_ready', to: 'students#lesson_ready'
-  post '/student/new_message' => 'students#new_message', :as => :new_message
+  #post '/student/new_message' => 'students#new_message', :as => :new_message
   post '/student/update_lesson_status', to: 'students#update_lesson_status'
   get '/student/review_lesson', to: 'lesson_reviews#review_lesson'
-  get '/lesson/begin', to: 'lessons#begin_lesson'
-  get '/lesson/end', to: 'lessons#end_lesson'
+  
+  get '/lesson/lesson', to: 'lessons#lesson'
+  get '/lesson/begin_lesson', to: 'lessons#begin_lesson'
+  get '/lesson/end_lesson', to: 'lessons#end_lesson'
+  post '/lesson/new_message' => 'lessons#new_message', :as => :new_message
+  post '/lesson/update_lesson_status', to: 'lessons#update_lesson_status'
+  get '/lesson/cancel_class_Teacher', to: 'lessons#cancel_class_teacher'
+  get '/lesson/cancel_class_Student', to: 'lessons#cancel_class_student'
+  get '/lesson/report_problem', to: 'lessons#report_problem'
+
+  
+
+    
+
+    
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
