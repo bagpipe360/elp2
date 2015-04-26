@@ -1,0 +1,27 @@
+<%= form_for(@lesson_review) do |f| %>
+  <% if @lesson_review.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@lesson_review.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @lesson_review.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<%= hidden_field_tag 'lesson_id', @lid %>
+  <div class="field">
+    <%= f.label :score %><br />
+    <%= f.number_field(:score, in: 1..5, step: 1) %>
+  </div>
+  <div class="field">
+    <%= f.label :comment %><br />
+    <%= f.text_field :comment %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

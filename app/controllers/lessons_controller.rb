@@ -162,19 +162,15 @@ class LessonsController < ApplicationsController
     @lesson_id = params[:lid]
     lesson = Lesson.find(@lesson_id)
     status = params[:ready]
-   @channel = "/other_user_updates/" + @lesson_id.to_s + "/" + @user.id.to_s
-    if status == 'true'
-      lesson.student_ready = true
-    else
-      lesson.student_ready = false
-    end
-    if lesson.save
-      if lesson.teacher_ready and status == 'true' and lesson.teacher.online
-        start_lesson = true
-      else
-        start_lesson = false
-      end
-      @message = {:status => status, :start_lesson => start_lesson}
+   if lesson.student == @user
+     lesson.update_student_status(status)
+   else
+     lesson.update_teacher_status(status)
+   end
+   puts 'CHECK IT' + lesson.teacher_ready.to_s
+   if lesson.save
+      @channel = "/other_user_updates/" + @lesson_id.to_s + "/" + @user.id.to_s     
+      @message = {:status => status, :start_lesson => lesson.ready_to_start}
       puts @message
       respond_to do |f|
         f.js
@@ -226,11 +222,20 @@ class LessonsController < ApplicationsController
     case lesson.class_time_state
     when 'missed'
       @missed_class = true
-      @message = "This class was missed."
+      if lesson.missed_by_both
+        missed_by = 'both'
+      elsif lesson.missed_by_student
+        missed_by = 'student'
+      else
+        missed_by = 'teacher'
+      end
+      @message = "This class was missed by " + missed_by
+      render 'missed_class'
     when 'taken'
       @taken_class = true
       @message = "This class was taken"
     when 'scheduled'
+      @show_ready = lesson.show_ready
       @scheduled_class = true
       @message = "This class is currently scheduled"
     when 'cancelled'

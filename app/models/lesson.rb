@@ -10,12 +10,13 @@ class Lesson < ActiveRecord::Base
   
   
   #class constants
-  @@current_time = Time.now
   @@lesson_cancel_threshold = 5.hours
-  @@lesson_cancel_threshold_time = @@current_time - @@lesson_cancel_threshold
+  @@lesson_ready_threshold = 30.minutes
+  @@lesson_cancel_threshold_time = Time.now - @@lesson_cancel_threshold
+  @@time_before_show_ready = Time.now - @@lesson_ready_threshold
  
   def allow_lesson_cancel
-    @@current_time < @@lesson_cancel_threshold_time
+    Time.now < @@lesson_cancel_threshold_time
   end
 
   def calculate_cost
@@ -60,12 +61,24 @@ class Lesson < ActiveRecord::Base
   
   def end_lesson
     #mark end time and save rounded total time
-    self.end_time = @@current_time 
+    self.end_time = Time.now
     self.rounded_time = end_time - start_time
   end
   
   def missed
-    !self.end_time.blank? && self.end_time >= @@current_time
+    self.end_time.blank? && self.time_slot.end_time <= Time.now
+  end
+  
+  def missed_by_both
+    self.missed_by_student && self.missed_by_teacher
+  end
+  
+  def missed_by_student
+    !self.student_ready
+  end
+  
+  def missed_by_teacher
+    !self.teacher_ready
   end
   
   def pretty_end
@@ -79,12 +92,17 @@ class Lesson < ActiveRecord::Base
   def pretty_time_till
     puts '------------- PRETTY TIME TILL'
     puts self.time_slot.start_time
-    puts @@current_time
+    puts Time.now
     puts '--------------------------------'
-    debug_time = self.time_slot.start_time + 4.days + 1.minutes
-    time_diff = Time.diff( time_slot.start_time, @@current_time, '%d')
+#     debug_time = self.time_slot.start_time - 48.days
+#     Time.now = debug_time
+    time_diff = Time.diff( time_slot.start_time, Time.now, '%d')
     puts time_diff
     show_reasonable_time(self.time_slot.start_time, time_diff) 
+  end
+  
+  def ready_to_start
+     self.student_ready and self.teacher_ready and self.teacher.online and self.student.online
   end
   
   def report_problem(problem)
@@ -94,16 +112,21 @@ class Lesson < ActiveRecord::Base
   end
   
   def scheduled
-    self.time_slot.start_time <= @@current_time
+    self.time_slot.start_time >= Time.now
   end
+  
+  def show_ready
+    Time.now >= @@time_before_show_ready  
+  end
+  
   
   def show_reasonable_time(start_time, time_diff) 
     #Do not want to show large time values in hours or minutes. 
         puts '--------------------------------'
     puts '--------------------------------'
     puts start_time
-    puts @@current_time
-    if start_time >= @@current_time #class is in future
+    puts Time.now
+    if start_time >= Time.now #class is in future
       if time_diff[:week] >= 1 or time_diff[:month] >= 1 or time_diff[:year] >= 1
         #'Class is on ' + start_time.strftime("%m/%d/%Y, %I:%M %P") + ', 
         'Class is in ' + time_diff[:diff]
@@ -139,9 +162,26 @@ class Lesson < ActiveRecord::Base
   end
   
   def taken
-    !self.end_time.blank? && self.end_time >= @@current_time
+    !self.end_time.blank? && self.end_time <= Time.now
   end
   
- 
+  def update_student_status(status)
+     if status == 'true'
+       self.student_ready = true
+     else
+       self.student_ready = false
+     end
+  end
+  
+  def update_teacher_status(status)
+    puts status
+    puts "CHECK STATUS"
+    if status == 'true'
+        self.teacher_ready = true
+    else
+        self.teacher_ready = false
+    end
+    self.save
+  end
     
 end

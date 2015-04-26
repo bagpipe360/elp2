@@ -1,31 +1,7 @@
 <%if @lessons.blank?%>
-<p> There are no lessons to . </p>
+<p> There are no lessons to Take. </p>
 <%else%>
 <%@lessons.each do |l|%>
-<p> Scheduled Time </p>
-Start <%= l.time_slot.start_time%> <br /> 
-End <%= l.time_slot.end_time%> <br />
-<%=l.teacher.name%> <br />
-<%if l.start_time.blank?%>
-  This lesson was never entered. <br />
-<!---<a href="/student/lesson?lesson_id=<%=l.id%>">View Lesson</a> <br />--->
-<a href="/lesson/lesson?lesson_id=<%=l.id%>">View Lesson</a> <br />
-
-<%else%>
-<%= l.start_time%> <br />
-<%= l.end_time%> <br />
-<%= l.rounded_time%> <br />
-
-<% if l.student_paid %>
-<p> This lesson has been paid for </p>
-<% else%>
-<p> You owe payment for this lesson! </p>
+  <%= render :partial=> "students/lesson", :locals => {:lesson => l},  :layout => false%>
+<% end %>
 <%end%>
-<%end%>
-<%end%>
-<%end%>
-
-
-<style>
-
-</style>

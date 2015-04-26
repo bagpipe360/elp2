@@ -1,0 +1,2 @@
+      invoke  active_record
+      create    db/migrate/20150405205946_add_canceled_to_lessons.rb
