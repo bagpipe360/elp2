@@ -44,6 +44,14 @@ class Lesson < ActiveRecord::Base
     end
   end
   
+  def cancelled
+  	self.status == 'cancelled'
+  end
+  
+  def self.cancelled
+  	where(:status => 'cancelled')
+  end
+  
   def class_time_state
     #A class can be missed, taken, scheduled, rescheduled, or cancelled.
     if self.missed
@@ -66,7 +74,11 @@ class Lesson < ActiveRecord::Base
   end
   
   def missed
-    self.end_time.blank? && self.time_slot.end_time <= Time.now
+    self.end_time.blank? && self.time_slot.end_time <= Time.now && !self.cancelled && !self.taken
+  end
+  
+  def self.missed
+  	self.missed
   end
   
   def missed_by_both
@@ -116,7 +128,7 @@ class Lesson < ActiveRecord::Base
   end
   
   def show_ready
-    Time.now >= @@time_before_show_ready  
+    Time.now >= @@time_before_show_ready && self.scheduled
   end
   
   
@@ -159,6 +171,10 @@ class Lesson < ActiveRecord::Base
          time_diff[:hour].to_s + ' hours and ' +time_diff[:minute].to_s + ' minutes ago.'
       end
     end
+  end
+  
+  def self.get_by_status(status)
+  	where(status: status)
   end
   
   def taken

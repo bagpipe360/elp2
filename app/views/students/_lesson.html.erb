@@ -7,22 +7,13 @@
         Start <%= lesson.time_slot.pretty_start%> <br /> 
         End <%= lesson.time_slot.pretty_end%> <br />
     <%=lesson.teacher.name%> <br />
-    <%if lesson.start_time.blank?%>
-      This lesson was never entered. <br />
-    <!---<a href="/student/lesson?lesson_id=<%=lesson.id%>">View Lesson</a> <br />--->
-    <a href="/lesson/lesson?lesson_id=<%=lesson.id%>">View Lesson</a> <br />
 
-    <%else%>
-    <%= lesson.start_time%> <br />
-    <%= lesson.end_time%> <br />
-    <%= lesson.rounded_time%> <br />
-
-    <% if lesson.student_paid %>
-    <p> This lesson has been paid for </p>
-    <% else%>
-    <p> You owe payment for this lesson! </p>
-    <%end%>
-    <%end%>
+		<!---<a href="/student/lesson?lesson_id=<%=lesson.id%>">View Lesson</a> <br />--->
+		<a href="/lesson/lesson?lesson_id=<%=lesson.id%>">View Details</a> <br />
+	
+		<% if lesson.show_ready%>
+			<input type="checkbox" name="my-checkbox" checked>
+		<%end%>
       </div>
     </div>
   </div> <!--COL--->
@@ -30,7 +21,8 @@
     <div class="panel panel-default pull-left">
     <div class="panel-body">
  
-  Teacher info
+	  <%= render :partial=> "users/teacher", :locals => {:teacher => lesson.teacher, :page => 'student_view_lessons', :lesson => lesson},  :layout => false%>
+
       </div>
     </div>
   </div> <!--COL--->

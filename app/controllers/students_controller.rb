@@ -9,6 +9,7 @@ class StudentsController < ApplicationController
   def lessons
     @user = User.find(current_identity.user_id)
     @lessons = @user.taking_lessons
+	
   end
   
   def view_teacher

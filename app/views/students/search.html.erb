@@ -9,18 +9,8 @@
 
 <h3> List of Teachers </h3>
 <%@teachers.each do |t|%>
-<%=t.name %>, <a href="view_teacher?id=<%=t.id%>">View Profile</a> <br />
-<p> <%=t.last_name%>'s available times: </p>
-<%t.time_slots.each do |ts|%>
-<%if ts.lesson.blank?%>
-<%=ts.start_time%> to <%=ts.end_time%> <a  href="sign_up?ts_id=<%=ts.id%>" class="sign_up" id="<%=ts.id%>">Sign Up </a> <br />
-<%end%>
-<%end%>
-<p> <%=t.name%>'s available class types. </p>
-<%t.services.each do |service| %>
-<%= service.language_name + ', ' + service.level_name + ', ' + service.type_name%><br />
-<%end%>
-
+	<%= render :partial=> "users/teacher", :locals => {:teacher => t, :page => 'search_lessons'},  :layout => false%>
+	
 <%end%>
 
                  

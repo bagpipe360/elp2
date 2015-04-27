@@ -1,26 +1,11 @@
 <h1>Listing time_slots</h1>
 
-<table>
-  <tr>
-    <th>Teacher</th>
-    <th>Start time</th>
-    <th>End time</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
 
 <% @time_slots.each do |time_slot| %>
-  <tr>
-    <td><%= time_slot.user_id %></td>
-    <td><%= time_slot.start_time %></td>
-    <td><%= time_slot.end_time %></td>
-    <td><%= link_to 'Show', time_slot %></td>
-    <td><%= link_to 'Edit', edit_time_slot_path(time_slot) %></td>
-    <td><%= link_to 'Destroy', time_slot, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
+
+		<%= render :partial=> "time_slots/time_slot", :locals => {:time_slot => time_slot},  :layout => false%>
+<br />
 <% end %>
-</table>
 
 <br />
 

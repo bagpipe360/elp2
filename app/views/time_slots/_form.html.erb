@@ -20,7 +20,12 @@
     <%= f.label :end_time %><br />
     <%= f.datetime_select :end_time, {minute_step: 15, ampm: true} %>
   </div>
+  <div class="field">
+    <%= f.label :recurrence_pattern %><br />
+    <%= f.select :recurrence_pattern, options_for_select(["M", "T", "W", "R", "F", "S", "N"]), {}, { :multiple => true, :size => 6}%>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>
 <% end %>
+

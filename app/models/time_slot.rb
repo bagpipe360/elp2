@@ -1,5 +1,5 @@
 class TimeSlot < ActiveRecord::Base
-  attr_accessible :end_time, :start_time, :user_id
+  attr_accessible :end_time, :start_time, :user_id, :recurrence_pattern
   
   belongs_to :user
   has_one :lesson
@@ -26,4 +26,10 @@ class TimeSlot < ActiveRecord::Base
   def pretty_end
     self.end_time.strftime("%I:%M %P")   #=> "Printed on 11/19/2007"
   end
+  
+  
+  def recurrence_pattern=(val)
+    write_attribute(:recurrence_pattern, val.strip)
+  end
+  
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150405211857) do
+ActiveRecord::Schema.define(:version => 20150427034202) do
 
   create_table "applications", :force => true do |t|
     t.integer  "user_id"
@@ -114,14 +114,14 @@ ActiveRecord::Schema.define(:version => 20150405211857) do
     t.boolean  "teacher_paid"
     t.text     "token"
     t.text     "session_id"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.integer  "service_id"
     t.boolean  "student_ready", :default => false
     t.boolean  "teacher_ready", :default => false
     t.boolean  "started"
-    t.boolean  "cancelled",     :default => false
     t.float    "rate"
+    t.string   "status",        :default => "scheduled"
   end
 
   create_table "levels", :force => true do |t|
@@ -166,8 +166,9 @@ ActiveRecord::Schema.define(:version => 20150405211857) do
     t.integer  "user_id"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.string   "recurrence_pattern"
   end
 
   create_table "types_of_classes", :force => true do |t|

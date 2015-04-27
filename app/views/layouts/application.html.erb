@@ -3,7 +3,12 @@
 <head>
   <title>Elp2</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application", "http://steady-box-12-181649.use1-2.nitrousbox.com:9292/faye.js" %>
+  <%= javascript_include_tag "application"%>
+
+ 
+<!-- 
+  "http://steady-box-12-181649.use1-2.nitrousbox.com:9292/faye.js" 
+ -->
   <%= csrf_meta_tags %>
       <script src='http://static.opentok.com/webrtc/v2.2/js/opentok.min.js'></script>
 
@@ -15,8 +20,12 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<!-- 
+<script src="assets/javascript/bootstrap-switch.js"></script>
+ -->
+
 </head>
-<body>
+<body class=" <%= controller_name%> <%= action_name %> ">
  <!--<div class="header">
   <b><ul>
   <li><a href="/">Logout</a></li>
@@ -33,6 +42,7 @@
         <%= link_to 'Register', new_identity_registration_path %> or <%= link_to 'Sign in', new_identity_session_path %>
     <% end %>
   <a href="#">Test You Video Stream</a>
+  <div class="pull-right">Time till next class- </div>
 </div>
 
 <%= yield %>
