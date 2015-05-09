@@ -1,28 +1,25 @@
+<div class="row">
+<div class="panel panel-default">
+  <div class="panel-heading"><%= link_to 'Edit', edit_user_path(@user), class: "btn btn-success btn-sm pull-right" %></div>
+  <div class="panel-body">
+    <div class="col-xs-8">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h1><%= @user.first_name %> <%= @user.last_name %></h1>
+          <p> Here's what people see about you! <br />
+          <%= @user.description %>  </p>
+        </div><!--panel body-->
+      </div><!--panel-->
+     </div><!--col-xs-8-->
+    <div class="col-xs-4">
+        <div class="panel panel-default">
+        <div class="panel-body">
+          <p><%= @user.profile_picture %> </p>
+        </div><!--panel body-->
+      </div><!--panel-->
+    </div><!--col-xs-6-->
+   </div>
+</div><!--row-->
 
-<table>
-  <tr>
-    <th>First name</th>
-    <th>Last name</th>
-    <th>Role</th>
-    <th>Created at</th>
-    <th>Description</th>
-    <th>Profile picture</th>
-    <th>Verified terms and service</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<tr>
-    <td><%= @user.first_name %></td>
-    <td><%= @user.last_name %></td>
-    <td><%= @user.role %></td>
-    <td><%= @user.created_at %></td>
-    <td><%= @user.description %></td>
-    <td><%= @user.profile_picture %></td>
-    <td><%= @user.verified_terms_and_service %></td>
-    <td><%= link_to 'Edit', edit_user_path(@user) %></td>
-  </tr>
-</table>
 
 

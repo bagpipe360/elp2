@@ -8,11 +8,9 @@ class TimeSlot < ActiveRecord::Base
   @@current_time = DateTime.now
   @@timeslot_max = 3
   
-  validates_datetime :start_time, :after => @@current_time, :after_message => "must be at after current time"
-  validates_datetime :end_time, :after => @@current_time,  :after_message => "must be at after current time"
   validates_datetime :end_time, :after => :start_time, :after_message => "must be at after start time"
 
-  validate :check_timeslot_length
+#   validate :check_timeslot_length
 
   def check_timeslot_length
     time_diff = Time.diff(end_time,start_time, '%H')
@@ -26,10 +24,15 @@ class TimeSlot < ActiveRecord::Base
   def pretty_end
     self.end_time.strftime("%I:%M %P")   #=> "Printed on 11/19/2007"
   end
-  
+    
   
   def recurrence_pattern=(val)
-    write_attribute(:recurrence_pattern, val.strip)
+  	newString = "";
+  	val.each do |element|
+  		newString = newString + element
+  	end
+  	#newString = newString.gsub(/[^0-9a-z ]/i, '')
+    write_attribute(:recurrence_pattern, newString)
   end
   
 end

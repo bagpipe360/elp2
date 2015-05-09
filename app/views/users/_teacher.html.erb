@@ -1,0 +1,26 @@
+<div class="panel">
+<%=teacher.name%> <br />
+<%if teacher.online%>
+Teacher is online.
+<%else%>
+Teacher is offline.
+<%end%>
+<br /> 
+<a href="view_teacher?id=<%=teacher.id%>">View Profile</a> <br />
+
+<% if page == 'search_lessons' %>
+	<p> <%=teacher.last_name%>'s available times: </p>
+	<%teacher.time_slots.available.each do |ts|%>
+		<%if ts.lesson.blank?%>
+			<%=ts.start_time%> to <%=ts.end_time%> <a  href="sign_up?ts_id=<%=ts.id%>" class="sign_up" id="<%=ts.id%>">Sign Up </a> <br />
+		<%end%>
+	<%end%>
+	<p> <%=teacher.name%>'s available class types. </p>
+		<%teacher.services.each do |service| %>
+			<%= service.language_name + ', ' + service.level_name + ', ' + service.type_name%><br />
+		<%end%>
+<%end%>
+<% if page == 'student_view_lessons'  && lesson.show_ready %>
+	Teacher is <%if lesson.teacher_ready %> Ready <%else%> Not Ready <%end%>
+<%end%>
+</div>

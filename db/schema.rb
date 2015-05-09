@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150427034202) do
+ActiveRecord::Schema.define(:version => 20150507013128) do
 
   create_table "applications", :force => true do |t|
     t.integer  "user_id"
@@ -162,10 +162,18 @@ ActiveRecord::Schema.define(:version => 20150427034202) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "temp_time_slot_alterations", :force => true do |t|
+    t.datetime "scheduled_start"
+    t.datetime "scheduled_end"
+    t.integer  "user_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
   create_table "time_slots", :force => true do |t|
     t.integer  "user_id"
-    t.datetime "start_time"
-    t.datetime "end_time"
+    t.time     "start_time"
+    t.time     "end_time"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.string   "recurrence_pattern"

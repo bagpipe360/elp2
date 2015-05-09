@@ -13,7 +13,11 @@
 //= require jquery
 //require jquery_ujs
 //= require jquery-readyselector
+//= require jquery.classycountdown.min
+//= require jquery.knob
+//= require jquery.throttle
 //= require_tree .
 //= require websocket_rails/main
 //= require private_pub
+//= require sync
 

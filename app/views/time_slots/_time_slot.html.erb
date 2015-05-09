@@ -1,0 +1,6 @@
+    <%= time_slot.start_time %>
+    <%= time_slot.end_time %>
+    <%= time_slot.recurrence_pattern%>
+    <%= link_to 'Show', time_slot %>
+    <%= link_to 'Edit', edit_time_slot_path(time_slot) %>
+    <%= link_to 'Destroy', time_slot, method: :delete, data: { confirm: 'Are you sure?' } %>

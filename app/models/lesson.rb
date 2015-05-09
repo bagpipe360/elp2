@@ -12,11 +12,18 @@ class Lesson < ActiveRecord::Base
   #class constants
   @@lesson_cancel_threshold = 5.hours
   @@lesson_ready_threshold = 30.minutes
-  @@lesson_cancel_threshold_time = Time.now - @@lesson_cancel_threshold
-  @@time_before_show_ready = Time.now - @@lesson_ready_threshold
+  
+  
+  def lesson_cancel_threshold_time
+	return Time.now - @@lesson_cancel_threshold
+	end
+  
+  def time_before_show_ready(start_time) 
+  	return start_time - @@lesson_ready_threshold
+ end
  
   def allow_lesson_cancel
-    Time.now < @@lesson_cancel_threshold_time
+    Time.now < lesson_cancel_threshold_time
   end
 
   def calculate_cost
@@ -30,13 +37,13 @@ class Lesson < ActiveRecord::Base
   
   def cancel(user_role)
     if user_role == 'teacher'
-      if self.time_slot.start_time < @@lesson_cancel_threshold_time 
+      if self.time_slot.start_time < lesson_cancel_threshold_time 
         self.cancelled = true
       else
         return false
       end
     else
-      if self.time_slot.start_time < @@lesson_cancel_threshold_time 
+      if self.time_slot.start_time < lesson_cancel_threshold_time 
         self.cancelled = true
       else
         false
@@ -102,14 +109,9 @@ class Lesson < ActiveRecord::Base
   end
   
   def pretty_time_till
-    puts '------------- PRETTY TIME TILL'
-    puts self.time_slot.start_time
-    puts Time.now
-    puts '--------------------------------'
-#     debug_time = self.time_slot.start_time - 48.days
+ #     debug_time = self.time_slot.start_time - 48.days
 #     Time.now = debug_time
     time_diff = Time.diff( time_slot.start_time, Time.now, '%d')
-    puts time_diff
     show_reasonable_time(self.time_slot.start_time, time_diff) 
   end
   
@@ -128,16 +130,15 @@ class Lesson < ActiveRecord::Base
   end
   
   def show_ready
-    Time.now >= @@time_before_show_ready && self.scheduled
+  	puts 'check scheduled'
+  	puts self.scheduled
+  	puts Time.now
+    Time.now >= time_before_show_ready(self.time_slot.start_time) && self.scheduled
   end
   
   
   def show_reasonable_time(start_time, time_diff) 
     #Do not want to show large time values in hours or minutes. 
-        puts '--------------------------------'
-    puts '--------------------------------'
-    puts start_time
-    puts Time.now
     if start_time >= Time.now #class is in future
       if time_diff[:week] >= 1 or time_diff[:month] >= 1 or time_diff[:year] >= 1
         #'Class is on ' + start_time.strftime("%m/%d/%Y, %I:%M %P") + ', 

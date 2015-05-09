@@ -3,7 +3,6 @@ class TimeSlotsController < ApplicationController
   # GET /time_slots.json
   def index
     @time_slots = TimeSlot.where(:user_id => current_identity.user_id)
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @time_slots }
@@ -25,7 +24,7 @@ class TimeSlotsController < ApplicationController
   # GET /time_slots/new.json
   def new
     @time_slot = TimeSlot.new
-    
+    @recurrence_array = []
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @time_slot }
@@ -35,6 +34,7 @@ class TimeSlotsController < ApplicationController
   # GET /time_slots/1/edit
   def edit
     @time_slot = TimeSlot.find(params[:id])
+    @recurrence_array = @time_slot.recurrence_pattern.split(//) 
   end
 
   # POST /time_slots
@@ -42,6 +42,7 @@ class TimeSlotsController < ApplicationController
   def create
     @time_slot = TimeSlot.new(params[:time_slot])
     @time_slot.user_id = current_identity.user_id
+	@recurrence_array = []
     respond_to do |format|
       if @time_slot.save
         format.html { redirect_to @time_slot, notice: 'Time slot was successfully created.' }
@@ -57,7 +58,7 @@ class TimeSlotsController < ApplicationController
   # PUT /time_slots/1.json
   def update
     @time_slot = TimeSlot.find(params[:id])
-
+    @recurrence_array = @time_slot.recurrence_pattern.split(//)
     respond_to do |format|
       if @time_slot.update_attributes(params[:time_slot])
         format.html { redirect_to @time_slot, notice: 'Time slot was successfully updated.' }

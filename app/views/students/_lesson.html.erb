@@ -7,6 +7,11 @@
         Start <%= lesson.time_slot.pretty_start%> <br /> 
         End <%= lesson.time_slot.pretty_end%> <br />
     <%=lesson.teacher.name%> <br />
+<%if @message%>
+<%=@message%>
+<%end%>
+<p><div class="timer"><%=@pretty_time_till%></div></p>
+
 
 		<!---<a href="/student/lesson?lesson_id=<%=lesson.id%>">View Lesson</a> <br />--->
 		<a href="/lesson/lesson?lesson_id=<%=lesson.id%>">View Details</a> <br />

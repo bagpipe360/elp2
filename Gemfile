@@ -43,6 +43,7 @@ end
 gem 'websocket-rails'
 gem "thin"
 gem "faye"
+gem "sync"
 gem "redis"
 gem 'private_pub'
 # To use ActiveModel has_secure_password
@@ -68,7 +69,7 @@ gem 'time_diff', '~> 0.3.0'
 gem "opentok", "~> 2.2"
 
 #image upload
-gem "paperclip", "~> 2.7"
+gem "paperclip", "~> 4.2"
 gem "carrierwave"
 gem "jquery-fileupload-rails"
 
