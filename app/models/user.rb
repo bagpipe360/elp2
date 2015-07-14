@@ -11,8 +11,13 @@ class User < ActiveRecord::Base
   has_many :lessons, through: :time_slots
   has_many :student_uses_services
   has_many :teacher_teaches_services
+#  has_many :levels, through: :teacher_teaches_services
+  has_many :services, through: :teacher_teaches_services
+  	has_many :levels, through: :services
   has_one :application
   
+
+
   
  # Image Upload and processing
   attr_accessible :avatar
@@ -22,6 +27,23 @@ class User < ActiveRecord::Base
   
   has_one :identity
   has_one :contract
+  
+# def favorite_teachers
+#       self.select("DISTINCT users.*").joins(:services).where(query)
+#  User.joins(:favorite_teachers).where(:id =>  self.id)
+# end
+  
+  def teaching_level(level) 
+    services = self.services
+      if !services.blank?
+        services.each do |s|
+          if s.level_id = level
+            return true
+          end
+       end 
+      end   
+   return false     
+  end
   
   def self.teachers
     where(:role => 'Teacher')
@@ -33,6 +55,33 @@ class User < ActiveRecord::Base
   
   def name
     self.first_name + ' ' + self.last_name
+  end
+  
+    
+  def self.filter_selections(selections)
+      skill_level = selections[:skill_level]
+      language = selections[:language]
+      class_type = selections[:class_type]
+      query = ""
+      first = true
+      if !skill_level.blank?
+        query += " level_id = " + skill_level
+        first = false
+      end
+      if !language.blank?
+        if !first
+          query += " AND "
+        end
+        query += " language_id = " + language
+        first = false
+      end
+      if !class_type.blank?
+        if !first
+          query += " AND "
+         end
+        query += " types_of_class_id = " + class_type
+      end
+      self.select("DISTINCT users.*").joins(:services).where(query)
   end
   
   def services

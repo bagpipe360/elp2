@@ -1,11 +1,51 @@
 class StudentsController < ApplicationController
+  before_filter :set_user
+  
+  def set_user
+    @user = User.find(current_identity.user_id)
+  end
+  
+  #params: elem_id, elem_type (teacher, class..)
+  def add_favorite_teacher
+    teacher = User.find(params[:teacher_id])
+    ft = FavoriteTeacher.new
+    ft.teacher_id = params[:teacher_id]
+    ft.student_id = current_identity.user_id
+    ft.save
+    render_favorite_teachers
+    render :partial => "render_favorite_teachers"
+  end
 
+  
+  def remove_favorite_teacher
+    FavoriteTeacher.where(:teacher_id => params[:teacher_id], :student_id => current_identity.user_id).destroy_all
+    render_favorite_teachers
+    render :partial => "render_favorite_teachers"
+  end
+  
+  def render_favorite_teachers
+      @user = User.find(current_identity.user_id)
+    @favorite_teachers = []
+    favorite_teachers_relations = @user.favorite_teachers
+    favorite_teachers_relations.each do |favorite_teacher_relation|
+      @favorite_teachers.push(favorite_teacher_relation.teacher)
+    end
+    @teachers = User.teachers - @favorite_teachers
+  end
   
   def favorite_teachers
     @user = User.find(current_identity.user_id)
-    @favorite_teachers = @user.favorite_teachers
+    @favorite_teachers = []
+    favorite_teachers_relations = @user.favorite_teachers
+    favorite_teachers_relations.each do |favorite_teacher_relation|
+      @favorite_teachers.push(favorite_teacher_relation.teacher)
+    end
+    @teachers = User.teachers - @favorite_teachers
   end
+  
+  
 
+  
   def lessons
     @user = User.find(current_identity.user_id)
     @lessons = @user.taking_lessons
@@ -46,8 +86,31 @@ class StudentsController < ApplicationController
       
   end
   
+  def schedule
+    @student = @user
+    @lessons = Lesson.where(:student_id => @user.id)
+  end
+  
+  def load_student_schedule
+  # return  array of events of type { start: ISO, end: ISO, title: string, id: Entity id }
+    start_date = params[:start]
+    end_date = params[:end]
+    start_date = Date.strptime(start_date, '%Y-%m-%d')
+    end_date = Date.strptime(end_date, '%Y-%m-%d') - 1.days
+    lessons =  @user.taking_lessons.where(:start_time => start_date..end_date)
+    events = []
+    lessons.each do |lesson|
+      lesson_events = lesson.weekly_event_json('student')
+      events = events + lesson_events
+    end
+    render :json => events
+  end
+  
   def search
-    @teachers = User.teachers  
+    @teachers = User.teachers
+    @skill_levels = Level.all
+    @languages = Language.all
+    @class_types = TypesOfClass.all  
   end
   
   def lesson

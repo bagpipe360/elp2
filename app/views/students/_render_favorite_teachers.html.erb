@@ -1,0 +1,18 @@
+<%if @favorite_teachers.blank?%>
+<p> You have not favored any teachers </p>
+<%else%>
+<div id="favored-teachers">
+	<%@favorite_teachers.each do |f|%>
+		<%= render :partial=> "users/teacher", :locals => {:page => 'already_favored', :teacher => f},  :layout => false%>	
+	<%end%>
+</div>
+<%end%>
+<%if @teachers.blank?%>
+	<p> You have favored all of the teachers!</p>
+<%else%>
+	<div id="teachers">
+		<%@teachers.each do |f|%>
+			<%= render :partial=> "users/teacher", :locals => {:page => 'favorites', :teacher => f},  :layout => false%>	
+		<%end%>
+	</div>
+<%end%>

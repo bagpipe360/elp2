@@ -20,14 +20,23 @@ end
     @types_of_classes = TypesOfClass.all
   end
   
+#  def render_services
+#      @user = User.find(current_identity.user_id)
+#    @services = @user.teacher_teaches_services
+#    @languages = Language.all
+#    @levels = Level.all
+#    @types_of_classes = TypesOfClass.all
+#    render :partial => "render_services"
+#  end
+  
   
   def subscribe_to_service
     language = Language.find(params[:language_id])
-    type_of_class = TypesOfClass.find(params[:service_id])
-    level = Level.find(params[:level_id])
-    service = Service.where(:types_of_class_id => type_of_class, :level_id => level, :language_id => language)
+    types_of_class = TypesOfClass.find(params[:service_ids])
+    levels = Level.find(params[:level_ids])
+    service = Service.where(:types_of_class_id => params[:service_ids], :level_id => params[:level_ids], :language_id => params[:language_id])
     if service.blank?
-      service = Service.new(:types_of_class_id => type_of_class.id, :level_id => level.id, :language_id => language.id)
+      service = Service.new(:types_of_class_id => params[:service_ids], :level_id => params[:level_ids], :language_id => params[:language_id])
       if service.save
         t = TeacherTeachesService.new
         t.service_id = service.id
@@ -115,6 +124,28 @@ end
         f.js
       end
     end
+  end
+  
+  def load_teachers_schedule
+  # return  array of events of type { start: ISO, end: ISO, title: string, id: Entity id }
+    start_date = params[:start]
+    end_date = params[:end]
+    start_date = Date.strptime(start_date, '%Y-%m-%d')
+    end_date = Date.strptime(end_date, '%Y-%m-%d') - 1.days
+    teacher = User.find(current_identity.user_id)
+    time_slots = teacher.time_slots
+    lessons = teacher.teaching_lessons.where(:start_time => start_date..end_date)
+    events = []
+    time_slots.each do |ts|
+      ts_events = ts.weekly_event_json(start_date.to_datetime, end_date.to_datetime)
+      events = events + ts_events
+    end
+    lessons.each do |lesson|
+      lesson_events = lesson.weekly_event_json('teacher')
+      events = events + lesson_events
+    end
+    
+    render :json => events
   end
   
 end

@@ -1,0 +1,4 @@
+<h3> List of Teachers </h3>
+		<%@teachers.each do |t|%>
+			<%= render :partial=> "users/teacher", :locals => {:teacher => t, :page => 'search_lessons'},  :layout => false%>
+		<%end%>

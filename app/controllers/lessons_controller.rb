@@ -1,4 +1,6 @@
 class LessonsController < ApplicationsController
+layout nil
+layout 'application', :except => :render_filtered_results
 
   def index
     @lessons = Lesson.all
@@ -78,6 +80,12 @@ class LessonsController < ApplicationsController
       format.html { redirect_to lessons_url }
       format.json { head :no_content }
     end
+  end
+  
+  def render_filtered_results
+  @teachers = User.teachers
+  @teachers = @teachers.filter_selections(params) 
+    render :partial => "render_filtered_results"
   end
   
   def begin_lesson

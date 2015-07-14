@@ -14,8 +14,27 @@ class Lesson < ActiveRecord::Base
   @@lesson_ready_threshold = 30.minutes
   
   
+  def weekly_event_json(user_type)
+  # returns   {id: ts.id, start: ts.start_time.iso8601, end: ts.end_time.iso8601, title: 'Teacher Name'} for scheduled lesson
+#      start_time = DateTime.new(self.year, time.month, time.day, self.start_time.hour, self.start_time.min)
+#      end_time = DateTime.new(time.year, time.month, time.day, self.end_time.hour, self.start_time.min)
+      if user_type === 'teacher'
+        user_name = self.student.name
+      else 
+        user_name = self.teacher.name
+      end
+      return [{
+          :id => self.id, 
+          :start => self.start_time.iso8601, 
+          :end => self.end_time.iso8601, 
+          :title => 'Lesson with ' + user_name,
+          :color => 'red'
+        }]
+      
+  end
+  
   def lesson_cancel_threshold_time
-	return Time.now - @@lesson_cancel_threshold
+	 	return Time.now - @@lesson_cancel_threshold
 	end
   
   def time_before_show_ready(start_time) 

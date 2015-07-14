@@ -24,12 +24,8 @@
   <b>Description:</b>
   <%= @user.description %>
 </p>
-
-<p>
-  <b>Profile picture:</b>
-  <%= @user.profile_picture %>
-</p>
-
+<p> Profile Picture <br />
+          <%= image_tag @user.avatar.url(:medium) %></p>
 <p>
   <b>Verified terms and service:</b>
   <%= @user.verified_terms_and_service %>

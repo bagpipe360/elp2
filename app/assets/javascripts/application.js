@@ -19,5 +19,8 @@
 //= require_tree .
 //= require websocket_rails/main
 //= require private_pub
-//= require sync
-
+//= require moment
+//= require bootstrap-datetimepicker
+//= require underscore-min.js
+//= require moment.min.js
+//= require fullcalendar.js

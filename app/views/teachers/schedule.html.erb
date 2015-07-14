@@ -1,4 +1,4 @@
-<p> These are time slots you have available to sign up for. </p>
+
 <%@time_slots.each do |ts|%>
 <%lesson = Lesson.where(:time_slot_id => ts.id)%>
 <%if !lesson.blank? %>
@@ -27,32 +27,9 @@
 
 <a href="/time_slots/new"> Create new Time Slot</a>
 
-<button class="changeFirst">Change</button>
+<h4> The goal of this calendar is to show when students have signed up for classes in the future.
+It also acts as a tool to edit your weekly schedule. If no student has signed up for a slot, you may
+change  the schedule as needed. If a student has signed up for the slot, request cancellation.
+</h4>
 <div id="calendar"></div>
 
-<script>
-
-  $(document).ready(function() {
-
-    // page is now ready, initialize the calendar...
-
-    $('#calendar').fullCalendar({
-        // put your options and callbacks here
-        
-        firstDay: 0,
-        height: 500,
-        header: {
-    left:   'title',
-    center: 'agendaWeek agendaDay month',
-    right:  'today prev next nextYear'
-}
-    });
-    
-    $('.changeFirst').click(function() {
-    	$('#calendar').fullCalendar({ firstDay: 4 });
-    });
-
-});
-
-
-</script>

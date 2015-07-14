@@ -1,0 +1,92 @@
+$(".teachers.schedule").ready( function() {
+
+    // page is now ready, initialize the calendar...
+
+  $('#calendar').fullCalendar({
+        // put your options and callbacks here
+     events: '/load_teachers_schedule',
+	 header: {
+     left   : 'prev,next',
+     center : 'title',
+     right  : 'agendaDay, agendaWeek',
+    },
+defaultView: 'agendaWeek',
+firstDay: 1
+
+		    });
+    
+    $('.changeFirst').click(function() {
+    	$('#calendar').fullCalendar({ firstDay: 4 });
+    });
+
+});
+
+
+$('.teachers.services').ready( function() {
+	$('.type-selections, .level-selections').hide();
+	var language_id;
+    var service_ids = []; 
+    var level_ids = [];
+	
+  $('.offer_service').click( function() {
+	language_id = $('.select-language.active').attr('id');	  
+ 	$('.select-type-of-class.active').each(function() {
+		 service_ids.push($(this).attr('id'));
+	 });
+	 $('.select-level.active').each(function() {
+		 level_ids.push($(this).attr('id'));
+	 });
+	 console.log(language_id);
+	 console.log(service_ids);
+	 console.log(level_ids);
+	 
+	 $.ajax({ 
+      url: '/teacher/save_service',
+      type: 'GET',
+      data: {'language_id': language_id, 'service_ids': service_ids, 'level_ids': level_ids},
+      success: function(text) {
+        if (text == "Success") {
+          alert(text + '!');
+          location.reload();
+        }
+        else if (text == "Failure") {
+          alert("Was unable to save Service information.");
+        }
+        else if (text == "Higher"){
+           alert("You are already offering thise service at a higher level.");
+        }
+        else {
+          alert("Service is alread being offered.")       
+        }
+      },
+      failure: function() {
+         alert("Something went wrong."); 
+      }
+      }); 
+	});
+	
+	$('.select-language').click(function() {
+		$('.type-selections').show();
+	});
+	 $('.select-type-of-class').click(function() {
+		$('.level-selections').show();
+	 });
+	  $('.select-level, .select-type-of-class, .select-language').click(function() {
+		 var selection = $(this);
+		 if (selection.hasClass('active')) { // already selected
+		 	selection.removeClass('active');
+			if (selection.hasClass('select-language')) {
+				$('.level-selections').hide();
+			}
+		 }
+		 else {
+			 selection.addClass('active');
+			  if (selection.hasClass('select-language')) {
+					$('.select-language').not(this).removeClass('active');
+			  }
+		 }
+
+
+	 });
+
+});

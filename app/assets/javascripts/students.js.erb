@@ -1,0 +1,61 @@
+$(".students.lessons").ready( function() {
+	$.fn.bootstrapSwitch.defaults.size = 'large';
+	var checkbox = $("[name='my-checkbox']");
+	checkbox.bootstrapSwitch( {onText: 'Ready', offText: 'Not Ready', onColor: 'success', offColor: 'danger'});
+});
+
+
+$(".students.favorite_teachers").ready( function() {
+	$('body').on('click', '.add-favorite-teacher', function() {
+		var tid = $(this).attr('id');
+		$.ajax({
+			url: "/student/add_favorite_teacher",
+			data: {'teacher_id' : tid},
+			method: 'POST',
+			success: function(htmlElem) {
+				$('#favorite-teachers-holder').html(htmlElem);
+
+			}
+		});
+	
+	});
+	
+	$('body').on('click', '.remove-favorite-teacher', function() {
+			var tid = $(this).attr('id');
+			$.ajax({
+				url: "/student/remove_favorite_teacher",
+				data: {'teacher_id' : tid},
+				method: 'POST',
+				success: function(htmlElem) {
+					$('#favorite-teachers-holder').html(htmlElem);
+				}
+			});
+		
+		});
+
+});
+
+
+$(".students.schedule").ready( function() {
+
+    // page is now ready, initialize the calendar...
+
+  $('#calendar').fullCalendar({
+        // put your options and callbacks here
+     events: '/load_student_schedule',
+	 header: {
+     left   : 'prev,next',
+     center : 'title',
+     right  : 'agendaDay, basicWeek',
+    },
+defaultView: 'basicWeek',
+firstDay: 1
+
+		    });
+    
+    $('.changeFirst').click(function() {
+    	$('#calendar').fullCalendar({ firstDay: 4 });
+    });
+
+});
+

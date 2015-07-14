@@ -1,8 +1,3 @@
-<%if @favorite_teachers.blank?%>
-<p> You have not favored any teachers </p>
-<%else%>
-<%@favorite_teachers.each do |f|%>
-<%= f.teacher.name%>
-<%= f.comments%>
-<%end%>
-<%end%>
+<div id = "favorite-teachers-holder">
+		<%= render "students/render_favorite_teachers" %>
+</div>

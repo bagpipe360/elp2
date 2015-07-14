@@ -25,7 +25,7 @@ class TimeSlot < ActiveRecord::Base
     self.end_time.strftime("%I:%M %P")   #=> "Printed on 11/19/2007"
   end
     
-  
+
   def recurrence_pattern=(val)
   	newString = "";
   	val.each do |element|
@@ -35,4 +35,34 @@ class TimeSlot < ActiveRecord::Base
     write_attribute(:recurrence_pattern, newString)
   end
   
+  def weekly_event_json(start_date, end_date)
+  # returns   {id: ts.id, start: ts.start_time.iso8601, end: ts.end_time.iso8601, title: 'Open Slot'} for time slot
+    events = []
+    recurrence = self.recurrence_pattern
+    recurrence.split('').each do |r|
+      case r
+       when 'M'
+        time = end_date.beginning_of_week(:monday)
+       when 'T'
+        time = end_date.beginning_of_week(:tuesday)
+       when 'W'
+        time = end_date.beginning_of_week(:wednesday)
+       when 'R'
+        time = end_date.beginning_of_week(:thursday)
+       when 'F'
+        time = end_date.beginning_of_week(:friday)
+       when 'S'
+        time = end_date.beginning_of_week(:saturday)
+       when 'N'
+        time = end_date.beginning_of_week(:sunday)
+       else # the date is a single instance
+       time = self.start_time
+       end   
+      start_time = DateTime.new(time.year, time.month, time.day, self.start_time.hour, self.start_time.min)
+      end_time = DateTime.new(time.year, time.month, time.day, self.end_time.hour, self.start_time.min)
+      events.push( {:id => self.id, :start => start_time.iso8601, :end => end_time.iso8601, :title => 'title' })
+    end
+    return events
+  end
+
 end

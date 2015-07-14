@@ -26,6 +26,7 @@ Elp2::Application.routes.draw do
   get '/update_online_status', to: 'users#update_online_status'
   
   get '/teacher/schedule', to: 'teachers#schedule'
+  get 'load_teachers_schedule', to: 'teachers#load_teachers_schedule'
   get '/teacher/services', to: 'teachers#services'
   get '/teacher/save_service', to: 'teachers#subscribe_to_service'
   get '/teacher/lesson', to: 'teachers#lesson'
@@ -43,7 +44,11 @@ Elp2::Application.routes.draw do
   #post '/student/new_message' => 'students#new_message', :as => :new_message
   post '/student/update_lesson_status', to: 'students#update_lesson_status'
   get '/student/review_lesson', to: 'lesson_reviews#review_lesson'
-  
+  post '/student/add_favorite_teacher', to: 'students#add_favorite_teacher'
+  post '/student/remove_favorite_teacher', to: 'students#remove_favorite_teacher'
+  get '/student/schedule', to: 'students#schedule'
+  get 'load_student_schedule', to: 'students#load_student_schedule'
+ 
   get '/lesson/lesson', to: 'lessons#lesson'
   get '/lesson/begin_lesson', to: 'lessons#begin_lesson'
   get '/lesson/end_lesson', to: 'lessons#end_lesson'
@@ -52,7 +57,7 @@ Elp2::Application.routes.draw do
   get '/lesson/cancel_class_Teacher', to: 'lessons#cancel_class_teacher'
   get '/lesson/cancel_class_Student', to: 'lessons#cancel_class_student'
   get '/lesson/report_problem', to: 'lessons#report_problem'
-
+  post '/render_filtered_results', to: 'lessons#render_filtered_results'
   
 
     

@@ -14,7 +14,7 @@
     <div class="col-xs-4">
         <div class="panel panel-default">
         <div class="panel-body">
-          <p><%= @user.profile_picture %> </p>
+          <%= image_tag @user.avatar.url(:medium) %>
         </div><!--panel body-->
       </div><!--panel-->
     </div><!--col-xs-6-->

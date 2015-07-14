@@ -1,0 +1,35 @@
+  <h3> Services You Offer </h3>
+  <div class="row">
+  <div class="col-xs-4">
+<%@services.each do |s|%>
+<%= s.service.language.language%>, <%=s.service.types_of_class.type_of_class%>, <%=s.service.level.level%> <br />
+<%end%>
+  </div>
+  </div>
+
+<h3> New Language </h3>
+<div class="row">
+  <div class="col-xs-2">
+<ul class="nav nav-pills nav-stacked language-selections"> 
+    <%@languages.each do |l|%>
+    	<li class="select-language" id="<%=l.id%>"><a href="#"><%=l.language%></a></li></li>
+    <%end%>
+</ul>
+</div>
+<div class="col-xs-4">
+<ul class="nav nav-pills nav-stacked type-selections"> 
+  <%@types_of_classes.each do |s|%>
+    <li class="select-type-of-class" id="<%=s.id%>"><a href="#"><%=s.type_of_class%>, <%=s.description%></a></li>
+  <%end%>
+</ul>
+</div>
+<div class="col-xs-6">
+<ul class="nav nav-pills nav-stacked level-selections"> 
+ <p> Select the highest level for the language and service you feel comfortable with. Please refer to the level descriptions. </p>
+  <%@levels.each do |l|%>
+  <li class="select-level" id="<%=l.id%>"><a href="#"><%=l.level%>, <%=l.description%></a></li></li>
+  <%end%>
+</ul>
+</div>
+</div>
+<button class="offer_service">Offer Service </button>
